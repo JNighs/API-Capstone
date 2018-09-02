@@ -1,0 +1,23 @@
+body {
+  padding-top: 50px;
+}
+
+.hidden {
+  display: none;
+}
+
+.js-search-results {
+  display: flex;
+  text-align: center;
+}
+
+.js-search-results div {
+  margin: 5px;
+}
+
+img {
+  width: 100%;
+}
+:focus {
+  outline: 5px dotted red;
+}

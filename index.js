@@ -1,35 +1,52 @@
-const YOUTUBE_SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
+//https://comicvine.gamespot.com/api/search/?api_key=YOUR-KEY&format=json&sort=name:asc&resources=issue&query=%22Master%20of%20kung%20fu%22
+//https://comicvine.gamespot.com/api/search/?api_key=YOUR-KEY&format=json&query=batman&limit=5
+const COMICVINE_SEARCH_URL = 'https://comicvine.gamespot.com/api/search/';
 const searchObj = {};
-
-function getDataFromApi(page) {
+/*
+function getDataFromApi() {
   const query = {
-    part: 'snippet',
-    key: 'AIzaSyCiygCMvjxFfC7iSmw72OtLDHxc9KetWds',
-    q: `${searchObj.value}`,
-    maxResults: 5,
-    type: 'video',
-    pageToken: page
+    api_key: '4db3b920ae1fd223ec017edcfb1b6ed3d6c680b0',
+    format: 'jsonp',
+    query: `${searchObj.value}`,
+    limit: 5,
   }
-  $.getJSON(YOUTUBE_SEARCH_URL, query, showResultPage);
+  $.getJSON(COMICVINE_SEARCH_URL, query, showResultPage);
+}
+*/
+function getDataFromApi(searchTerm, callback) {
+  const settings = {
+    url: COMICVINE_SEARCH_URL,
+    data: {
+      api_key: '4db3b920ae1fd223ec017edcfb1b6ed3d6c680b0',
+      format: 'jsonp',
+      query: `${searchObj.value}`,
+      limit: 5,
+      json_callback: 'showResultPage'
+    },
+    dataType: 'JSONP',
+    type: 'GET'
+  };
+  
+  $.ajax(settings);
 }
 
 function renderResult(result) {
   return `
     <div>
-      <a class="js-result-thumbnail" href="https://www.youtube.com/watch?v=${result.id.videoId}" target="_blank">
-        <img src="${result.snippet.thumbnails.medium.url}" alt="${result.snippet.title}">
+      <a class="js-result-thumbnail" href="" target="_blank">
+        <img src="${result.image.medium_url}" alt="REPLACE">
       </a>
       <h3>
-        <a class="js-user-name" href="https://www.youtube.com/channel/${result.snippet.channelId}" target="_blank">${result.snippet.channelTitle}</a>
+        <a class="js-user-name" href="${result.site_detail_url}" target="_blank">${result.name}</a>
       </h3>
     </div>
   `;
 }
 
 function showResultPage(data) {
-  displayResultsText(data);
-  displayYouTubeSearchData(data);
-  updatePageButtons(data);
+  //displayResultsText(data);
+  displayComicVineSearchData(data);
+  //updatePageButtons(data);
 }
 
 function displayResultsText(data) {
@@ -39,8 +56,9 @@ function displayResultsText(data) {
   `);
 }
 
-function displayYouTubeSearchData(data) {
-  const results = data.items.map((item, index) => renderResult(item));
+function displayComicVineSearchData(data) {
+  console.log(data);
+  const results = data.results.map((item, index) => renderResult(item));
   $('.js-search-results').html(results);
 }
 

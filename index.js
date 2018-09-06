@@ -1,18 +1,18 @@
 //https://comicvine.gamespot.com/api/search/?api_key=YOUR-KEY&format=json&sort=name:asc&resources=issue&query=%22Master%20of%20kung%20fu%22
 //https://comicvine.gamespot.com/api/search/?api_key=YOUR-KEY&format=json&query=batman&limit=5
-const COMICVINE_SEARCH_URL = 'https://comicvine.gamespot.com/api/search/';
+const OMDb_SEARCH_URL = 'http://www.omdbapi.com/';
 const searchObj = {};
-/*
+
 function getDataFromApi() {
   const query = {
-    api_key: '4db3b920ae1fd223ec017edcfb1b6ed3d6c680b0',
-    format: 'jsonp',
-    query: `${searchObj.value}`,
-    limit: 5,
+    apikey: 'c6c932dc',
+    type: 'movie',
+    s: `${searchObj.value}`,
+    page: 1,
   }
-  $.getJSON(COMICVINE_SEARCH_URL, query, showResultPage);
+  $.getJSON(OMDb_SEARCH_URL, query, showResultPage);
 }
-*/
+/*
 function getDataFromApi(searchTerm, callback) {
   const settings = {
     url: COMICVINE_SEARCH_URL,
@@ -29,15 +29,15 @@ function getDataFromApi(searchTerm, callback) {
   
   $.ajax(settings);
 }
-
+*/
 function renderResult(result) {
   return `
     <div>
-      <a class="js-result-thumbnail" href="" target="_blank">
-        <img src="${result.image.medium_url}" alt="REPLACE">
+      <a class="js-result-thumbnail" href="https://www.imdb.com/title/${result.imdbID}/" target="_blank">
+        <img src="${result.Poster}" alt="REPLACE">
       </a>
       <h3>
-        <a class="js-user-name" href="${result.site_detail_url}" target="_blank">${result.name}</a>
+        <a class="js-user-name" href="https://www.imdb.com/title/${result.imdbID}/" target="_blank">${result.Title}</a>
       </h3>
     </div>
   `;
@@ -58,7 +58,7 @@ function displayResultsText(data) {
 
 function displayComicVineSearchData(data) {
   console.log(data);
-  const results = data.results.map((item, index) => renderResult(item));
+  const results = data.Search.map((item, index) => renderResult(item));
   $('.js-search-results').html(results);
 }
 

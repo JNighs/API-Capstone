@@ -188,13 +188,6 @@ searchResults = {
             "Poster": "https://m.media-amazon.com/images/M/MV5BNjk2ZWIzOTYtMGUxMC00MzdhLWI3ZGMtZGJhNzZmMDYxYjJlXkEyXkFqcGdeQXVyMjQ3NTQ4MjQ@._V1_SX300.jpg"
         },
         {
-            "Title": "Guardians of the Galaxy",
-            "Year": "2015–",
-            "imdbID": "tt4176370",
-            "Type": "series",
-            "Poster": "https://m.media-amazon.com/images/M/MV5BNDM4NDQxMDU2MV5BMl5BanBnXkFtZTgwMDY2MDQ5NjE@._V1_SX300.jpg"
-        },
-        {
             "Title": "Guardians of the Tomb",
             "Year": "2018",
             "imdbID": "tt4915672",
@@ -202,26 +195,12 @@ searchResults = {
             "Poster": "https://m.media-amazon.com/images/M/MV5BZjMzZDI4YmEtZDIwNS00YWQ5LTkzN2UtMzJiMTliNjZiMzRjXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_SX300.jpg"
         },
         {
-            "Title": "Halo 5: Guardians",
-            "Year": "2015",
-            "imdbID": "tt3467114",
-            "Type": "game",
-            "Poster": "https://images-na.ssl-images-amazon.com/images/M/MV5BMjAzMjIzMjY4OF5BMl5BanBnXkFtZTgwNDM5NzQxNzE@._V1_SX300.jpg"
-        },
-        {
             "Title": "Ice Guardians",
             "Year": "2016",
             "imdbID": "tt4431208",
             "Type": "movie",
             "Poster": "https://m.media-amazon.com/images/M/MV5BMjM5MDQyODAyNF5BMl5BanBnXkFtZTgwMDgzNjA4OTE@._V1_SX300.jpg"
-        }
-    ],
-    "totalResults": "145",
-    "Response": "True"
-}
-
-searchResultsPage2 = {
-    "Search": [
+        },
         {
             "Title": "Guardians of the Night",
             "Year": "2016",
@@ -230,32 +209,25 @@ searchResultsPage2 = {
             "Poster": "https://m.media-amazon.com/images/M/MV5BMTExMTAzMmMtYWJhZS00NDI4LTgzM2UtMGYxZjJlMjQyMmYzXkEyXkFqcGdeQXVyNjMxMzM3NDI@._V1_SX300.jpg"
         },
         {
-            "Title": "G-Force: Guardians of Space",
-            "Year": "1987–",
-            "imdbID": "tt0302109",
-            "Type": "series",
-            "Poster": "https://images-na.ssl-images-amazon.com/images/M/MV5BYWQ4ZWExZjUtMGU0OS00NTRiLTkwZmItNDBjYmE1OGJmYjlhXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_SX300.jpg"
-        },
-        {
             "Title": "Guardians of the Galaxy: Inferno",
             "Year": "2017",
             "imdbID": "tt7131308",
             "Type": "movie",
             "Poster": "https://images-na.ssl-images-amazon.com/images/M/MV5BZGQ0YzEyNWQtNGJiMi00NTAxLThkNDctNGY2ODkzYWMxZmZkXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_SX300.jpg"
-        },
+        }
+    ],
+    "totalResults": "112",
+    "Response": "True"
+}
+
+searchResultsPage2 = {
+    "Search": [
         {
             "Title": "The Guardians",
             "Year": "2017",
             "imdbID": "tt6213362",
             "Type": "movie",
             "Poster": "https://m.media-amazon.com/images/M/MV5BNjdkZmU1MzEtNjQ4OC00ZWM3LWIwNGUtZmM1MjBjYTI2M2E0XkEyXkFqcGdeQXVyNDU0NjMyNTQ@._V1_SX300.jpg"
-        },
-        {
-            "Title": "The Super Powers Team: Galactic Guardians",
-            "Year": "1985–",
-            "imdbID": "tt0088619",
-            "Type": "series",
-            "Poster": "https://images-na.ssl-images-amazon.com/images/M/MV5BMTgwMzdiODMtMWI0MS00ZDI1LWIzMjMtNjkwMjVhZjE4NTI5XkEyXkFqcGdeQXVyNTQ5Njk1NDU@._V1_SX300.jpg"
         },
         {
             "Title": "Guardians",
@@ -286,13 +258,41 @@ searchResultsPage2 = {
             "Poster": "https://images-na.ssl-images-amazon.com/images/M/MV5BM2I5MDQxZTgtMGE2My00ZWNmLThiMzAtZjZmYzk3ZjUxOGViL2ltYWdlL2ltYWdlXkEyXkFqcGdeQXVyNTI5NjIyMw@@._V1_SX300.jpg"
         },
         {
-            "Title": "Guardians of the Galaxy: The Telltale Series",
+            "Title": "Guardians of the Lost Code 3D",
+            "Year": "2010",
+            "imdbID": "tt1632477",
+            "Type": "movie",
+            "Poster": "https://ia.media-imdb.com/images/M/MV5BMjA5MzIxMzY5MF5BMl5BanBnXkFtZTcwODAxMDgzMw@@._V1_SX300.jpg"
+        },
+        {
+            "Title": "The Guardians",
+            "Year": "2010",
+            "imdbID": "tt0800054",
+            "Type": "movie",
+            "Poster": "https://images-na.ssl-images-amazon.com/images/M/MV5BMjY2MDc0NjA0NV5BMl5BanBnXkFtZTgwODU2MjUxMjE@._V1_SX300.jpg"
+        },
+        {
+            "Title": "Unseen Guardians",
+            "Year": "1939",
+            "imdbID": "tt0143968",
+            "Type": "movie",
+            "Poster": "N/A"
+        },
+        {
+            "Title": "Dragon Guardians",
+            "Year": "2013",
+            "imdbID": "tt3205010",
+            "Type": "movie",
+            "Poster": "https://images-na.ssl-images-amazon.com/images/M/MV5BMTQ3MTk2OTg5M15BMl5BanBnXkFtZTgwNDI3MjI5MTE@._V1_SX300.jpg"
+        },
+        {
+            "Title": "LEGO Marvel Super Heroes - Guardians of the Galaxy: The Thanos Threat",
             "Year": "2017",
-            "imdbID": "tt6636812",
-            "Type": "game",
-            "Poster": "https://images-na.ssl-images-amazon.com/images/M/MV5BMzkwYzJkOTYtOWVlZC00Mzk3LThlZTktYWY3MDM3N2IwZDA3XkEyXkFqcGdeQXVyNTk5Nzg0MDE@._V1_SX300.jpg"
+            "imdbID": "tt7387224",
+            "Type": "movie",
+            "Poster": "https://m.media-amazon.com/images/M/MV5BMDFlNTI1MTgtNmU5Zi00YjNkLWEzMGQtM2ExZmRlNDkzZDcxXkEyXkFqcGdeQXVyMDQzODc1OA@@._V1_SX300.jpg"
         }
     ],
-    "totalResults": "145",
+    "totalResults": "112",
     "Response": "True"
 }

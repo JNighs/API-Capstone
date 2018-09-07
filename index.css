@@ -12,6 +12,10 @@ body {
   outline: 5px dotted red;
 }
 
+form {
+  text-align: center;
+}
+
 .movie-result img {
   width: 100%;
 }

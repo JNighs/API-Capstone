@@ -78,14 +78,10 @@ function showResultPage(data) {
 }
 
 function displayMovieData() {
-  /*
   const OMDb = searchObj.dataOMDb;
   const TMDb = searchObj.dataTMDb;
   const videoDb = searchObj.dataVideo;
-  */
 
-  //LightBox
-  
   //Movie title
   $('.movie-title').text(OMDb.Title);
   $('.movie-year').text(OMDb.Year);
@@ -154,8 +150,7 @@ function watchContainerClose() {
 }
 
 function onLoad() {
-  displaySearchResults(searchResults);
-  //displayMovieData();
+  watchSubmit();
   watchMovieClick();
   watchContainerClose();
 }

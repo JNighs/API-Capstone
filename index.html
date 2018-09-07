@@ -18,11 +18,35 @@
 			<button type="submit">Search</button>
 		</form>
 			<h2 class="js-results-text" hidden>Results</h2>
+			<div class="movie-container">
+				<div class="poster"></div>
+				<h2 class="movie-title">Movie Title</h2>
+				<h3 class="movie-year">Year</h3>
+				<br>
+				<section class="movie-details">
+					Rating: <span class="rating"></span><br>
+					Released: <span class="released"></span><br>
+					Runtime: <span class="runtime"></span>
+				</section>
+				<br>
+				<section class="movie-reviews">
+					IMDb: <span class="imdbScore"></span><br>
+					RT: <span class="rtScore"></span><br>
+					MC: <span class="mcScore"></span>
+				</section>
+				<br>
+				<p class="movie-plot"></p>
+				<br>
+				<h2>Trailers</h2>
+				<section class="movie-trailers">
+				</section>
+			</div>
 			<div class="js-search-results"></div>
 			<button type="button" class="prevButton" hidden>Prev</button>
 			<button type="button" class="nextButton" hidden>Next</button>
 	</main>
 	<script src="index.js"></script>
+	<script src="database.js"></script>
 </body>
 
 </html>

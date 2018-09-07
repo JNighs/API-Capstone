@@ -1,3 +1,8 @@
+body * {
+  margin: 0;
+  padding: 0;
+}
+
 body {
   padding-top: 50px;
 }
@@ -15,9 +20,29 @@ body {
   margin: 5px;
 }
 
-img {
-  width: 100%;
-}
 :focus {
   outline: 5px dotted red;
 }
+
+.poster {
+  background-position: center;
+  background-size: cover;
+  float: left;
+  width: 100px;
+  height: 100%;
+  margin-right: 10px;
+}
+
+.movie-container {
+  margin-top: 10px;
+  height: 500px;
+}
+
+.movie-trailers div {
+  display: inline-block;
+}
+
+.movie-trailers img {
+  width: 200px;
+}
+

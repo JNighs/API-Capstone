@@ -1,10 +1,10 @@
-//https://comicvine.gamespot.com/api/search/?api_key=YOUR-KEY&format=json&sort=name:asc&resources=issue&query=%22Master%20of%20kung%20fu%22
-//https://comicvine.gamespot.com/api/search/?api_key=YOUR-KEY&format=json&query=batman&limit=5
 const OMDb_SEARCH_URL = 'http://www.omdbapi.com/';
 const TMDb_SEARCH_URL = 'https://api.themoviedb.org/3/find/';
 const TMDb_MOVIE_URL = 'https://api.themoviedb.org/3/movie/'
 const TMDb_IMAGE_URL = 'https://image.tmdb.org/t/p/original/';
-const searchObj = {};
+const YOUTUBE_VIDEO_URL = 'https://www.youtube.com/watch?v=';
+const YOUTUBE_THUMBNAIL_URL = 'https://img.youtube.com/vi/';
+const searchObj = { value: 'guardians' };
 
 function searchFromOMDB() {
   const query = {
@@ -19,15 +19,6 @@ function searchFromOMDB() {
 function findIDs(searchData) {
   searchObj.imdbID = searchData.Search[0].imdbID;
   findIDFromTMDb();
-}
-
-function logTMDbID(data){
-  searchObj.TMDbID = data.movie_results[0].id;
-  $.when(getDataFromOMDb(), getDataFromTMDb(), getVideoFromTMDb()).done(function (data, data2, data3) {
-    console.log(data);
-    console.log(data2);
-    console.log(data3);
-  })
 }
 
 function getDataFromOMDb() {
@@ -61,6 +52,18 @@ function findIDFromTMDb() {
   return $.getJSON(`${TMDb_SEARCH_URL}${searchObj.imdbID}`, query, logTMDbID);
 }
 
+function logTMDbID(data) {
+  searchObj.TMDbID = data.movie_results[0].id;
+  $.when(getDataFromOMDb(), getDataFromTMDb(), getVideoFromTMDb()).done(function (dataOMDb, dataTMDb, dataVideo) {
+    searchObj.dataOMDb = dataOMDb[0];
+    searchObj.dataTMDb = dataTMDb[0];
+    searchObj.dataVideo = dataVideo[0].results;
+    console.log(searchObj.dataOMDb);
+    console.log(searchObj.dataTMDb);
+    console.log(searchObj.dataVideo);
+  })
+}
+
 function renderResult(result) {
   return `
     <div>
@@ -75,9 +78,36 @@ function renderResult(result) {
 }
 
 function showResultPage(data) {
-  //displayResultsText(data);
-  displayComicVineSearchData(data);
-  //updatePageButtons(data);
+  displayData(data);
+}
+
+function displayMovieData() {
+  //Movie title
+  $('.movie-title').text(OMDb.Title);
+  $('.movie-year').text(OMDb.Year);
+  //Movie details
+  $('.rating').text(OMDb.Rated);
+  $('.released').text(OMDb.Released);
+  $('.runtime').text(OMDb.Runtime);
+  //Review scores
+  $('.imdbScore').text(OMDb.Ratings[0].Value);
+  $('.rtScore').text(OMDb.Ratings[1].Value);
+  $('.mcScore').text(OMDb.Ratings[2].Value);
+  //Side Poster Image
+  $('.poster').css('background-image', `url('${TMDb_IMAGE_URL}${TMDb.backdrop_path}')`)
+  //Plot text
+  $('.movie-plot').text(OMDb.Plot);
+  //Trailers
+  const results = videoDB.map((item) => renderTrailers(item));
+  $('.movie-trailers').append(results);
+}
+
+function renderTrailers(data) {
+  return `
+    <div>
+      <img src="${YOUTUBE_THUMBNAIL_URL}${data.key}/hqdefault.jpg">
+    </div
+  `;
 }
 
 function displayResultsText(data) {
@@ -87,21 +117,10 @@ function displayResultsText(data) {
   `);
 }
 
-function displayComicVineSearchData(data) {
+function displayData(data) {
   console.log(data);
   const results = data.Search.map((item, index) => renderResult(item));
   $('.js-search-results').html(results);
-}
-
-function updatePageButtons(data) {
-  searchObj.nextPage = data.nextPageToken;
-  searchObj.prevPage = data.prevPageToken;
-  if (searchObj.nextPage)
-    $('.nextButton').prop('hidden', false);
-  else $('.nextButton').prop('hidden', true);
-  if (searchObj.prevPage)
-    $('.prevButton').prop('hidden', false);
-  else $('.prevButton').prop('hidden', true);
 }
 
 function watchSubmit() {
@@ -116,7 +135,8 @@ function watchSubmit() {
 }
 
 function onLoad() {
-  watchSubmit();
+  //searchFromOMDB();
+  displayMovieData();
 }
 
 $(onLoad);

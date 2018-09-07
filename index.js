@@ -4,20 +4,20 @@ const TMDb_MOVIE_URL = 'https://api.themoviedb.org/3/movie/'
 const TMDb_IMAGE_URL = 'https://image.tmdb.org/t/p/original/';
 const YOUTUBE_VIDEO_URL = 'https://www.youtube.com/watch?v=';
 const YOUTUBE_THUMBNAIL_URL = 'https://img.youtube.com/vi/';
-const searchObj = { value: 'guardians' };
+const searchObj = {};
 
 function searchFromOMDB() {
   const query = {
+    s: `${searchObj.value}`,
     apikey: 'c6c932dc',
     type: 'movie',
-    s: `${searchObj.value}`,
     page: 1,
   }
-  $.getJSON(OMDb_SEARCH_URL, query, findIDs);
+  $.getJSON(OMDb_SEARCH_URL, query, displaySearchResults);
 }
 
-function findIDs(searchData) {
-  searchObj.imdbID = searchData.Search[0].imdbID;
+function findIDs(resultID) {
+  searchObj.imdbID = searchObj.results.Search[resultID].imdbID;
   findIDFromTMDb();
 }
 
@@ -58,18 +58,14 @@ function logTMDbID(data) {
     searchObj.dataOMDb = dataOMDb[0];
     searchObj.dataTMDb = dataTMDb[0];
     searchObj.dataVideo = dataVideo[0].results;
-    console.log(searchObj.dataOMDb);
-    console.log(searchObj.dataTMDb);
-    console.log(searchObj.dataVideo);
+    displayMovieData();
   })
 }
 
-function renderResult(result) {
+function renderResult(result, index) {
   return `
-    <div>
-      <a class="js-result-thumbnail" href="https://www.imdb.com/title/${result.imdbID}/" target="_blank">
-        <img src="${result.Poster}" alt="REPLACE">
-      </a>
+    <div class="movie-result">
+        <img class="result-image" src="${result.Poster}" id="${index}" alt="REPLACE">
       <h3>
         <a class="js-user-name" href="https://www.imdb.com/title/${result.imdbID}/" target="_blank">${result.Title}</a>
       </h3>
@@ -78,10 +74,14 @@ function renderResult(result) {
 }
 
 function showResultPage(data) {
-  displayData(data);
+  displaySearchResults(data);
 }
 
 function displayMovieData() {
+  const OMDb = searchObj.dataOMDb;
+  const TMDb = searchObj.dataTMDb;
+  const videoDb = searchObj.dataVideo;
+
   //Movie title
   $('.movie-title').text(OMDb.Title);
   $('.movie-year').text(OMDb.Year);
@@ -98,8 +98,9 @@ function displayMovieData() {
   //Plot text
   $('.movie-plot').text(OMDb.Plot);
   //Trailers
-  const results = videoDB.map((item) => renderTrailers(item));
-  $('.movie-trailers').append(results);
+  const results = videoDb.map((item) => renderTrailers(item));
+  $('.movie-trailers').html(results);
+  $('.movie-container').removeClass('hidden');
 }
 
 function renderTrailers(data) {
@@ -117,10 +118,11 @@ function displayResultsText(data) {
   `);
 }
 
-function displayData(data) {
-  console.log(data);
-  const results = data.Search.map((item, index) => renderResult(item));
+function displaySearchResults(data) {
+  searchObj.results = data;
+  const results = data.Search.map((item, index) => renderResult(item, index));
   $('.js-search-results').html(results);
+  $('.js-search-results').removeClass('hidden');
 }
 
 function watchSubmit() {
@@ -130,13 +132,20 @@ function watchSubmit() {
     searchObj.value = queryTarget.val();
     // clear out the input
     queryTarget.val("");
+    $('.movie-container').addClass('hidden');
     searchFromOMDB();
   });
 }
 
+function watchMovieClick() {
+  $('.js-search-results').on("click", ".result-image", function () {
+    findIDs(this.id);
+  });
+}
+
 function onLoad() {
-  //searchFromOMDB();
-  displayMovieData();
+  watchSubmit();
+  watchMovieClick();
 }
 
 $(onLoad);

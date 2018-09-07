@@ -28,7 +28,7 @@ body {
   background-position: center;
   background-size: cover;
   float: left;
-  width: 100px;
+  width: 150px;
   height: 100%;
   margin-right: 10px;
 }
@@ -46,3 +46,6 @@ body {
   width: 200px;
 }
 
+.movie-result img {
+  width: 200px;
+}

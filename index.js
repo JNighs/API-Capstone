@@ -1,4 +1,4 @@
-const OMDb_SEARCH_URL = 'http://www.omdbapi.com/';
+const OMDb_SEARCH_URL = 'https://www.omdbapi.com/';
 const TMDb_SEARCH_URL = 'https://api.themoviedb.org/3/find/';
 const TMDb_MOVIE_URL = 'https://api.themoviedb.org/3/movie/'
 const TMDb_IMAGE_URL = 'https://image.tmdb.org/t/p/original/';

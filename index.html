@@ -7,7 +7,8 @@
 	<title>API Capstone</title>
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
 	 crossorigin="anonymous"></script>
-	<link href="index.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" href="index.css" type="text/css" />
+	<link rel="stylesheet" href="float-grid.css" type="text/css">
 </head>
 
 <body>
@@ -21,11 +22,12 @@
 		</form>
 
 		<h2 class="js-results-text hidden">Results</h2>
-		<div class="js-search-results"></div>
+		<div class="js-search-results section group"></div>
 		<button type="button" class="prevButton" hidden>Prev</button>
 		<button type="button" class="nextButton" hidden>Next</button>
 
-		<div class="movie-container hidden">
+		<div class="movie-container section group hidden">
+			<span class="close">&times;</span>
 			<div class="poster"></div>
 			<h2 class="movie-title">Movie Title</h2>
 			<h3 class="movie-year">Year</h3>
@@ -56,7 +58,7 @@
 		</div>
 	</main>
 	<script src="index.js"></script>
-	<!--<script src="database.js"></script>-->
+	<script src="database.js"></script>
 </body>
 
 </html>

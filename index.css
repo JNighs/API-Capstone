@@ -1,4 +1,5 @@
 body * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
@@ -7,23 +8,47 @@ body {
   padding-top: 50px;
 }
 
-.hidden {
-  display: none;
-}
-
-.js-search-results {
-  display: flex;
-  text-align: center;
-}
-
-.js-search-results div {
-  margin: 5px;
-}
-
 :focus {
   outline: 5px dotted red;
 }
 
+.movie-result img {
+  width: 100%;
+}
+
+.movie-container {
+  margin-top: 10px;
+  height: 500px;
+}
+
+.movie-container {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 75%;
+  height: 600px; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: lightgray;
+}
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 45px;
+  font-weight: bold;
+  margin: 10px;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Container Contents */
 .poster {
   background-position: center;
   background-size: cover;
@@ -31,11 +56,6 @@ body {
   width: 150px;
   height: 100%;
   margin-right: 10px;
-}
-
-.movie-container {
-  margin-top: 10px;
-  height: 500px;
 }
 
 .movie-trailers div {
@@ -46,6 +66,9 @@ body {
   width: 200px;
 }
 
-.movie-result img {
-  width: 200px;
+
+/*Utility*/
+
+.hidden {
+  display: none;
 }

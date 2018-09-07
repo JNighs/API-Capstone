@@ -64,7 +64,7 @@ function logTMDbID(data) {
 
 function renderResult(result, index) {
   return `
-    <div class="movie-result">
+    <div class="movie-result col span_2_of_10">
         <img class="result-image" src="${result.Poster}" id="${index}" alt="REPLACE">
       <h3>
         <a class="js-user-name" href="https://www.imdb.com/title/${result.imdbID}/" target="_blank">${result.Title}</a>
@@ -78,10 +78,14 @@ function showResultPage(data) {
 }
 
 function displayMovieData() {
+  /*
   const OMDb = searchObj.dataOMDb;
   const TMDb = searchObj.dataTMDb;
   const videoDb = searchObj.dataVideo;
+  */
 
+  //LightBox
+  
   //Movie title
   $('.movie-title').text(OMDb.Title);
   $('.movie-year').text(OMDb.Year);
@@ -143,9 +147,17 @@ function watchMovieClick() {
   });
 }
 
+function watchContainerClose() {
+  $('.close').click(function () {
+    $('.movie-container').addClass('hidden');
+  })
+}
+
 function onLoad() {
-  watchSubmit();
+  displaySearchResults(searchResults);
+  //displayMovieData();
   watchMovieClick();
+  watchContainerClose();
 }
 
 $(onLoad);

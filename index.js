@@ -1,35 +1,66 @@
 //https://comicvine.gamespot.com/api/search/?api_key=YOUR-KEY&format=json&sort=name:asc&resources=issue&query=%22Master%20of%20kung%20fu%22
 //https://comicvine.gamespot.com/api/search/?api_key=YOUR-KEY&format=json&query=batman&limit=5
 const OMDb_SEARCH_URL = 'http://www.omdbapi.com/';
+const TMDb_SEARCH_URL = 'https://api.themoviedb.org/3/find/';
+const TMDb_MOVIE_URL = 'https://api.themoviedb.org/3/movie/'
+const TMDb_IMAGE_URL = 'https://image.tmdb.org/t/p/original/';
 const searchObj = {};
 
-function getDataFromApi() {
+function searchFromOMDB() {
   const query = {
     apikey: 'c6c932dc',
     type: 'movie',
     s: `${searchObj.value}`,
     page: 1,
   }
-  $.getJSON(OMDb_SEARCH_URL, query, showResultPage);
+  $.getJSON(OMDb_SEARCH_URL, query, findIDs);
 }
-/*
-function getDataFromApi(searchTerm, callback) {
-  const settings = {
-    url: COMICVINE_SEARCH_URL,
-    data: {
-      api_key: '4db3b920ae1fd223ec017edcfb1b6ed3d6c680b0',
-      format: 'jsonp',
-      query: `${searchObj.value}`,
-      limit: 5,
-      json_callback: 'showResultPage'
-    },
-    dataType: 'JSONP',
-    type: 'GET'
-  };
-  
-  $.ajax(settings);
+
+function findIDs(searchData) {
+  searchObj.imdbID = searchData.Search[0].imdbID;
+  findIDFromTMDb();
 }
-*/
+
+function logTMDbID(data){
+  searchObj.TMDbID = data.movie_results[0].id;
+  $.when(getDataFromOMDb(), getDataFromTMDb(), getVideoFromTMDb()).done(function (data, data2, data3) {
+    console.log(data);
+    console.log(data2);
+    console.log(data3);
+  })
+}
+
+function getDataFromOMDb() {
+  const query = {
+    apikey: 'c6c932dc',
+    i: searchObj.imdbID,
+  }
+  return $.getJSON(OMDb_SEARCH_URL, query);
+}
+
+function getDataFromTMDb() {
+  const query = {
+    api_key: '46922a4eb88a052d565922dfe0666828'
+  }
+  return $.getJSON(`${TMDb_MOVIE_URL}${searchObj.TMDbID}`, query)
+}
+
+function getVideoFromTMDb() {
+  const query = {
+    api_key: '46922a4eb88a052d565922dfe0666828'
+  }
+  return $.getJSON(`${TMDb_MOVIE_URL}${searchObj.TMDbID}/videos`, query)
+}
+
+function findIDFromTMDb() {
+  const query = {
+    api_key: '46922a4eb88a052d565922dfe0666828',
+    language: 'en-US',
+    external_source: 'imdb_id'
+  }
+  return $.getJSON(`${TMDb_SEARCH_URL}${searchObj.imdbID}`, query, logTMDbID);
+}
+
 function renderResult(result) {
   return `
     <div>
@@ -80,26 +111,12 @@ function watchSubmit() {
     searchObj.value = queryTarget.val();
     // clear out the input
     queryTarget.val("");
-    getDataFromApi();
+    searchFromOMDB();
   });
-}
-
-function watchNext() {
-  $('.nextButton').click(event => {
-    getDataFromApi(searchObj.nextPage);
-  })
-}
-
-function watchPrev() {
-  $('.prevButton').click(event => {
-    getDataFromApi(searchObj.prevPage);
-  })
 }
 
 function onLoad() {
   watchSubmit();
-  watchNext();
-  watchPrev();
 }
 
 $(onLoad);

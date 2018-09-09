@@ -28,33 +28,36 @@
 
 		<div class="movie-container section group hidden">
 			<span class="close">&times;</span>
-			<div class="poster"></div>
-			<h2 class="movie-title">Movie Title</h2>
-			<h3 class="movie-year">Year</h3>
-			<br>
-			<section class="movie-details">
-				Rating:
-				<span class="rating"></span>
-				<br> Released:
-				<span class="released"></span>
-				<br> Runtime:
-				<span class="runtime"></span>
-			</section>
-			<br>
-			<section class="movie-reviews">
-				IMDb:
-				<span class="imdbScore"></span>
-				<br> RT:
-				<span class="rtScore"></span>
-				<br> MC:
-				<span class="mcScore"></span>
-			</section>
-			<br>
-			<p class="movie-plot"></p>
-			<br>
-			<h2>Trailers</h2>
-			<section class="movie-trailers">
-			</section>
+			<div class="section group">
+				<h2 class="movie-title col span_10_of_10">Movie Title</h2>
+			</div>
+			<div class="section group">
+				<div class="movie-details col span_5_of_10">
+					Year:
+					<span class="year"></span>
+					<br> Rating:
+					<span class="rating"></span>
+					<br> Released:
+					<span class="released"></span>
+					<br> Runtime:
+					<span class="runtime"></span>
+				</div>
+				<div class="movie-reviews col span_5_of_10">
+					IMDb:
+					<span class="imdbScore"></span>
+					<br> RT:
+					<span class="rtScore"></span>
+					<br> MC:
+					<span class="mcScore"></span>
+				</div>
+			</div>
+			<div class="section group">
+				<p class="movie-plot col span_10_of_10"></p>
+			</div>
+			<div class="section group">
+				<h2>Trailers</h2>
+				<div class="movie-trailers cold span_10_of_10"></div>
+			</div>
 		</div>
 	</main>
 	<script src="index.js"></script>

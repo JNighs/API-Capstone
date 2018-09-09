@@ -84,8 +84,8 @@ function displayMovieData() {
 
   //Movie title
   $('.movie-title').text(OMDb.Title);
-  $('.movie-year').text(OMDb.Year);
   //Movie details
+  $('.year').text(OMDb.Year);
   $('.rating').text(OMDb.Rated);
   $('.released').text(OMDb.Released);
   $('.runtime').text(OMDb.Runtime);
@@ -94,7 +94,12 @@ function displayMovieData() {
   $('.rtScore').text(OMDb.Ratings[1].Value);
   $('.mcScore').text(OMDb.Ratings[2].Value);
   //Side Poster Image
-  $('.poster').css('background-image', `url('${TMDb_IMAGE_URL}${TMDb.backdrop_path}')`)
+  $('.movie-container').css('background-image', `linear-gradient(
+        rgba(0, 0, 0, 0.75), 
+        rgba(0, 0, 0, 0.75)
+      ),
+      url('${TMDb_IMAGE_URL}${TMDb.backdrop_path}')
+    `)
   //Plot text
   $('.movie-plot').text(OMDb.Plot);
   //Trailers

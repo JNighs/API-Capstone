@@ -15,17 +15,24 @@
 	<main role="main" aria-live="assertive">
 		<form action="#" class="js-search-form">
 			<label for="searchForm">
-				<h1>Search on OMDb</h1>
+				<h1>Search on TMDb</h1>
 			</label>
 			<input type="text" class="js-query" ID="searchForm">
 			<button type="submit">Search</button>
 		</form>
 
-		<h2 class="js-results-text hidden">Results</h2>
-		<div class="js-search-results section group"></div>
-		<button type="button" class="prevButton" hidden>Prev</button>
-		<button type="button" class="nextButton" hidden>Next</button>
-
+		<form action="#" class="js-now-playing">
+			<select class="discover">
+				<option value="nowPlaying">Now Playing</option>
+				<option value="popular">Popular</option>
+				<option value="topRated">Top Rated</option>
+				<option value="upcoming">Upcoming</option>
+			</select>
+			in: 
+			<select class="country"></select>
+			<button type="submit">Submit</button>
+		</form>
+		
 		<div class="movie-container section group hidden">
 			<span class="close">&times;</span>
 			<div class="section group">
@@ -59,8 +66,15 @@
 				<div class="movie-trailers cold span_10_of_10"></div>
 			</div>
 		</div>
+
+		<h2 class="js-results-text hidden">Results</h2>
+		<div class="js-search-results section group"></div>
+		<button type="button" class="prevButton" hidden>Prev</button>
+		<button type="button" class="nextButton" hidden>Next</button>
+
 	</main>
 	<script src="index.js"></script>
+	<script src="countryDb.js"></script>
 	<!--<script src="database.js"></script>-->
 </body>
 

@@ -48,6 +48,16 @@ form {
 .movie-title {
   font-size: 30pt;
 }
+
+.movieDetails {
+  height: 0px;
+  width:200px;
+  margin:10px 10px;   
+  clear:both;
+  transition: height .5s;
+  background-color: red;
+}
+
 /* The Close Button */
 .close {
   color: #aaa;

@@ -49,13 +49,21 @@ function discoverSearch(discover, country) {
 }
 
 function displayResults(data) {
+  //Clear previous results
+  $('.main-gallery').flickity('remove', $('.main-gallery').flickity('getCellElements'));
   //Filter results to not show any films that don't have a movie poster.
   const results = data.results.filter(movie => movie.poster_path);
   console.log(results);
-  const printResults = results.map((item, index) => renderResult(item, index));
-  $('.js-search-results').html(printResults);
-  $('.js-search-results').removeClass('hidden');
-
+  results.forEach(function (result, index) {
+    var $cellElems = $(`<div class="gallery-cell">
+    <img class="result-image" src="${TMDb_IMAGE_SMALL_URL}${result.poster_path}" id="${index}" alt="REPLACE">
+      <h3>
+        <a class="js-user-name" href="" target="_blank">${result.original_title}</a>
+      </h3>
+    </div>`);
+    $('.main-gallery').flickity('append', $cellElems);
+  })
+  $('.main-gallery').flickity('select', 0);
 }
 
 function getDataFromOMDb() {
@@ -85,7 +93,7 @@ function logTMDbID(data) {
 
 function renderResult(result, index) {
   return `
-    <div class="movie-result col span_2_of_10">
+    <div class="gallery-cell">
         <img class="result-image" src="${TMDb_IMAGE_SMALL_URL}${result.poster_path}" id="${index}" alt="REPLACE">
       <h3>
         <a class="js-user-name" href="" target="_blank">${result.original_title}</a>
@@ -140,14 +148,6 @@ function displayResultsText(data) {
   `);
 }
 
-function displaySearchResults(data) {
-  searchObj.results = data;
-  console.log(data);
-  const results = data.Search.map((item, index) => renderResult(item, index));
-  $('.js-search-results').html(results);
-  $('.js-search-results').removeClass('hidden');
-}
-
 function watchSubmit() {
   $('.js-search-form').submit(event => {
     event.preventDefault();
@@ -161,14 +161,14 @@ function watchSubmit() {
 }
 
 function watchMovieClick() {
-  $('.js-search-results').on("click", ".result-image", displayMovieDetails);
+  $('.main-gallery').on("click", ".result-image", displayMovieDetails);
 }
 
 function displayMovieDetails(e) {
-  $('.js-search-results').before('<div class="movieDetails section group"></div>');
+  $('.main-gallery').before('<div class="movieDetails section group"></div>');
   $('.movieDetails').animate({
-    height: "500px"
-  }, 500, 'linear', function() {
+    height: "300px"
+  }, 500, 'linear', function () {
 
   })
 }
@@ -197,15 +197,70 @@ function listCountries() {
   $("option[value='US']").prop('selected', true);
 }
 
+function flickityInit() {
+  $('.main-gallery').flickity({
+    // options
+    cellAlign: 'left',
+    contain: false,
+    adaptiveHeight: true, 
+    
+  });
+}
+
+function flickityWatchClick() {
+  $('.main-gallery').on('staticClick.flickity', function (event, pointer, cellElement, cellIndex) {
+    // dismiss if cell was not clicked
+    if (!cellElement) {
+      return;
+    }
+
+    if ($(cellElement).hasClass('is-clicked')) {
+      $(cellElement).removeClass('is-clicked');
+      $('.main-gallery').flickity('select', cellIndex);        
+      $('.main-gallery').flickity('reposition');
+      $(cellElement).bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){ 
+      })
+      return;
+    }
+    // change cell background with .is-clicked
+    $('.main-gallery').find('.is-clicked').removeClass('is-clicked');
+    $(cellElement).addClass('is-clicked');
+    $('.main-gallery').flickity('reposition');
+    $('.main-gallery').flickity('select', cellIndex);
+  });
+}
+/*
+function flickityWatchClick() {
+  $('.main-gallery').on('staticClick.flickity', function (event, pointer, cellElement, cellIndex) {
+    // dismiss if cell was not clicked
+    if (!cellElement) {
+      return;
+    }
+    
+    $('.main-gallery').flickity('select', cellIndex);
+    $('.main-gallery').find('.is-clicked').removeClass('is-clicked');
+    $(cellElement).addClass('is-clicked');
+  });
+}
+*/
+
+function flickityOnSettle() {
+  $('.main-gallery').on( 'settle.flickity', function( event, index ) {
+    //console.log( 'Flickity settled at ' + index );
+  });
+}
+
 function onLoad() {
   /*
   watchContainerClose();
-  */
-
   watchMovieClick();
+  */
+  flickityWatchClick();
   watchSubmit();
   watchNowPlaying();
   listCountries();
+  flickityInit();
+  flickityOnSettle();
 }
 
 $(onLoad);

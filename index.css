@@ -58,6 +58,29 @@ form {
   background-color: red;
 }
 
+.gallery-cell {
+  width: 20%;
+  height: 500px;
+}
+
+.gallery-cell img {
+  width: 100%;
+}
+
+.gallery-cell { 
+  transition: left 1s ease;
+}
+
+.gallery-cell.is-selected {
+  background-color: yellow;
+}
+
+.gallery-cell.is-clicked { width: 100%; background-color: red;}
+
+.is-clicked img {
+  width: 20%;
+}
+
 /* The Close Button */
 .close {
   color: #aaa;

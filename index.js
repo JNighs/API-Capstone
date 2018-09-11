@@ -200,10 +200,9 @@ function listCountries() {
 function flickityInit() {
   $('.main-gallery').flickity({
     // options
-    cellAlign: 'left',
+    cellAlign: 'center',
     contain: false,
-    adaptiveHeight: true, 
-    
+    pageDots: false,
   });
 }
 

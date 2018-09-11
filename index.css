@@ -58,27 +58,29 @@ form {
   background-color: red;
 }
 
+.flickity-prev-next-button.previous, .flickity-prev-next-button.next {
+  top: 325px;
+}
+
+.gallery-cell, .gallery-cell img {
+  width: 400px;
+}
+
 .gallery-cell {
-  width: 20%;
-  height: 500px;
+  height: 800px;
 }
 
 .gallery-cell img {
-  width: 100%;
+  transition: 1s;
 }
 
-.gallery-cell { 
-  transition: left 1s ease;
+.gallery-cell.is-clicked { 
+  width: 80%; 
 }
-
-.gallery-cell.is-selected {
-  background-color: yellow;
-}
-
-.gallery-cell.is-clicked { width: 100%; background-color: red;}
 
 .is-clicked img {
-  width: 20%;
+  float:left;
+  width: 200px;
 }
 
 /* The Close Button */
@@ -114,4 +116,41 @@ form {
 
 .hidden {
   display: none;
+}
+
+/* Responsive */
+@media only screen and (max-width: 1280px){
+  .gallery-cell, .gallery-cell img {
+    width: 300px;
+  }
+
+  .gallery-cell {
+    height: 700px;
+  }
+
+  .is-clicked img {
+    width: 200px;
+  }
+
+  .flickity-prev-next-button.previous, .flickity-prev-next-button.next {
+    top: 225px;
+  }
+}
+
+@media only screen and (max-width: 640px){
+  .gallery-cell, .gallery-cell img {
+    width: 200px;
+  }
+
+  .gallery-cell {
+    height: 500px;
+  }
+
+  .is-clicked img {
+    width: 80px;
+  }
+
+  .flickity-prev-next-button.previous, .flickity-prev-next-button.next {
+    top: 150px;
+  }
 }

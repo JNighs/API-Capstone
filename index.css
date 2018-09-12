@@ -60,6 +60,14 @@ form {
   padding-right: 25px;
 }
 
+.movie-ratings {
+  margin: 5px 0 5px 0;
+}
+
+.movie-title {
+  font-size: 30pt;
+}
+
 
 /* The Close Button */
 .close {

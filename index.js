@@ -1,11 +1,11 @@
 const OMDb_SEARCH_URL = 'https://www.omdbapi.com/';
 const TMDb_SEARCH_URL = 'https://api.themoviedb.org/3/search/movie';
-const TMDb_NOWPLAYING_URL = 'https://api.themoviedb.org/3/movie/now_playing'
-const TMDb_POPULAR_URL = 'https://api.themoviedb.org/3/movie/popular'
-const TMDb_TOPRATED_URL = 'https://api.themoviedb.org/3/movie/top_rated'
-const TMDb_UPCOMING_URL = 'https://api.themoviedb.org/3/movie/upcoming'
-const TMDb_MOVIE_URL = 'https://api.themoviedb.org/3/movie/'
-const TMDb_DISCOVER_URL = 'https://aple.themoviedb.org/3/discover/movie'
+const TMDb_NOWPLAYING_URL = 'https://api.themoviedb.org/3/movie/now_playing';
+const TMDb_POPULAR_URL = 'https://api.themoviedb.org/3/movie/popular';
+const TMDb_TOPRATED_URL = 'https://api.themoviedb.org/3/movie/top_rated';
+const TMDb_UPCOMING_URL = 'https://api.themoviedb.org/3/movie/upcoming';
+const TMDb_MOVIE_URL = 'https://api.themoviedb.org/3/movie/';
+const TMDb_DISCOVER_URL = 'https://aple.themoviedb.org/3/discover/movie';
 const TMDb_IMAGE_BIG_URL = 'https://image.tmdb.org/t/p/original/';
 const TMDb_IMAGE_SMALL_URL = 'https://image.tmdb.org/t/p/w500/';
 const YOUTUBE_VIDEO_URL = 'https://www.youtube.com/watch?v=';
@@ -16,7 +16,7 @@ const key = {
   OMDb: 'c6c932dc'
 }
 
-function searchTMDb(search) {
+function TMDbSearch(search) {
   const query = {
     api_key: key.TMDb,
     query: search
@@ -24,7 +24,7 @@ function searchTMDb(search) {
   $.getJSON(TMDb_SEARCH_URL, query, displayResults);
 }
 
-function discoverSearch(discover, country) {
+function TMDbDiscover(discover, country) {
   const query = {
     api_key: key.TMDb,
     region: country
@@ -48,6 +48,62 @@ function discoverSearch(discover, country) {
   $.getJSON(discoverURL, query, displayResults);
 }
 
+function TMDbMovieLookUp(data) {
+  const movieID = data.id;
+  const query = {
+    api_key: key.TMDb,
+  }
+
+  $.getJSON(TMDb_MOVIE_URL + movieID, query, displayMovieDetails);
+}
+
+function OMDbMovieLookUp(IMDbID) {
+  const query = {
+    apikey: 'c6c932dc',
+    i: IMDbID
+  }
+  return $.getJSON(OMDb_SEARCH_URL, query, displayMovieRatings);
+}
+
+function TMDbTrailerLookUp(data) {
+  const query = {
+    api_key: key.TMDb
+  }
+  return $.getJSON(`${TMDb_MOVIE_URL}${data.id}/videos`, query, displayTrailers);
+}
+
+function renderResult(result, index) {
+  return $(`
+  <div class="gallery-cell">
+    <div class="image-container">
+      <img class="result-image" src="${TMDb_IMAGE_SMALL_URL}${result.poster_path}" id="${index}" alt="${result.original_title}" title="${result.original_title}">
+    </div>
+    <div class="result-details"></div>
+  </div>
+  `);
+}
+
+/*
+function displayResultsText(data) {
+  $('.js-results-text').prop('hidden', false);
+  $('.js-results-text').text(`
+    Results: ${data.pageInfo.totalResults}
+  `);
+}
+*/
+
+function watchSubmit() {
+  $('.js-search-form').submit(event => {
+    event.preventDefault();
+    const queryTarget = $(event.currentTarget).find('.js-query');
+    searchObj.value = queryTarget.val();
+    // clear out the input
+    queryTarget.val("");
+    $('.movie-container').addClass('hidden');
+    TMDbSearch(searchObj.value);
+  });
+}
+
 function displayResults(data) {
   //Clear previous results
   $('.main-gallery').flickity('remove', $('.main-gallery').flickity('getCellElements'));
@@ -64,105 +120,42 @@ function displayResults(data) {
   $('.main-gallery').flickity('select', 0);
 }
 
-function renderResult(result, index) {
+function displayMovieDetails(data) {
+  const render = renderDetails(data);
+  $('.is-clicked').children('.result-details').html(render);
+  //Look up review info from OMDb
+  OMDbMovieLookUp(data.imdb_id);
+}
+
+function displayMovieRatings(data) {
+  console.log(data);
+  var rt = data.Ratings.find(function (obj) { return obj.Source === "Rotten Tomatoes"; });
+  var imdb = data.Ratings.find(function (obj) { return obj.Source === "Internet Movie Database"; });
+  var mc = data.Ratings.find(function (obj) { return obj.Source === "Metacritic"; });
+  if (rt)
+    $('.rtScore').text(rt.Value);
+  else $('.rtScore').text('N/A');
+  if (imdb)
+    $('.imdbScore').text(imdb.Value);
+  else $('.imdbScore').text('N/A');
+  if (mc)
+    $('.mcScore').text(mc.Value);
+  else $('.mcScore').text('N/A');
+}
+
+
+function displayTrailers(data) {
+  console.log(data.results);
+}
+
+function renderVideoResult(result, index) {
   return $(`
   <div class="gallery-cell">
     <div class="image-container">
-      <img class="result-image" src="${TMDb_IMAGE_SMALL_URL}${result.poster_path}" id="${index}" alt="${result.original_title}" title="${result.original_title}">
+      <img class="result-image" src="${YOUTUBE_THUMBNAIL_URL}${result.key}/mqdefault.jpg" alt="${result.name}" title="${result.name}">
     </div>
-    <div class="result-details"></div>
   </div>
-  `);;
-}
-/*
-function getDataFromOMDb() {
-  const query = {
-    apikey: 'c6c932dc',
-    i: searchObj.imdbID,
-  }
-  return $.getJSON(OMDb_SEARCH_URL, query);
-}
-
-function getVideoFromTMDb() {
-  const query = {
-    api_key: '46922a4eb88a052d565922dfe0666828'
-  }
-  return $.getJSON(`${TMDb_MOVIE_URL}${searchObj.TMDbID}/videos`, query)
-}
-
-function logTMDbID(data) {
-  searchObj.TMDbID = data.movie_results[0].id;
-  $.when(getDataFromOMDb(), getDataFromTMDb(), getVideoFromTMDb()).done(function (dataOMDb, dataTMDb, dataVideo) {
-    searchObj.dataOMDb = dataOMDb[0];
-    searchObj.dataTMDb = dataTMDb[0];
-    searchObj.dataVideo = dataVideo[0].results;
-    displayMovieData();
-  })
-}
-
-function renderTrailers(data) {
-  return `
-    <div>
-      <img src="${YOUTUBE_THUMBNAIL_URL}${data.key}/hqdefault.jpg">
-    </div
-  `;
-}
-
-function displayResultsText(data) {
-  $('.js-results-text').prop('hidden', false);
-  $('.js-results-text').text(`
-    Results: ${data.pageInfo.totalResults}
   `);
-}
-
-*/
-function displayMovieData() {
-  const OMDb = searchObj.dataOMDb;
-  const TMDb = searchObj.dataTMDb;
-  const videoDb = searchObj.dataVideo;
-
-  //Movie title
-  $('.movie-title').text(OMDb.Title);
-  //Movie details
-  $('.year').text(OMDb.Year);
-  $('.rating').text(OMDb.Rated);
-  $('.released').text(OMDb.Released);
-  $('.runtime').text(OMDb.Runtime);
-  //Review scores
-  $('.imdbScore').text(OMDb.Ratings[0].Value);
-  $('.rtScore').text(OMDb.Ratings[1].Value);
-  $('.mcScore').text(OMDb.Ratings[2].Value);
-  //Side Poster Image
-  $('.movie-container').css('background-image', `linear-gradient(
-        rgba(0, 0, 0, 0.75), 
-        rgba(0, 0, 0, 0.75)
-      ),
-      url('${TMDb_IMAGE_URL}${TMDb.backdrop_path}')
-    `)
-  //Plot text
-  $('.movie-plot').text(OMDb.Plot);
-  //Trailers
-  const results = videoDb.map((item) => renderTrailers(item));
-  $('.movie-trailers').html(results);
-  $('.movie-container').removeClass('hidden');
-}
-
-function watchSubmit() {
-  $('.js-search-form').submit(event => {
-    event.preventDefault();
-    const queryTarget = $(event.currentTarget).find('.js-query');
-    searchObj.value = queryTarget.val();
-    // clear out the input
-    queryTarget.val("");
-    $('.movie-container').addClass('hidden');
-    searchTMDb(searchObj.value);
-  });
-}
-
-function displayMovieDetails(index) {
-  console.log(searchObj.results[index]);
-  const render = renderDetails(searchObj.results[index]);
-  $('.is-clicked').children('.result-details').html(render);
 }
 
 function renderDetails(data) {
@@ -170,10 +163,9 @@ function renderDetails(data) {
   <div class="movie-container">
     <h2 class="movie-title">${data.title}</h2>
     <div class="movie-details">
-      Year:
-      Rating:
+      Released: ${data.release_date}
     </div>
-    <div class="movie-reviews">
+    <div class="movie-ratings">
       IMDb:
       <span class="imdbScore"></span>
       <br> RT:
@@ -182,25 +174,17 @@ function renderDetails(data) {
       <span class="mcScore"></span>
     </div>
     <p class="movie-plot">${data.overview}</p>
-    <h2>Trailers</h2>
-    <div class="movie-trailers"></div>
+    <div class="video-gallery"></div>
   </div>
   `
 }
 
-/*
-function watchContainerClose() {
-  $('.close').click(function () {
-    $('.movie-container').addClass('hidden');
-  })
-}
-*/
 function watchNowPlaying() {
   $('.js-now-playing').submit(event => {
     const discover = $(event.currentTarget).find('.discover').val();
     const country = $(event.currentTarget).find('.country').val();
     event.preventDefault();
-    discoverSearch(discover, country);
+    TMDbDiscover(discover, country);
   })
 }
 
@@ -213,7 +197,7 @@ function listCountries() {
   $("option[value='US']").prop('selected', true);
 }
 
-function flickityInit() {
+function flickityInitMain() {
   $('.main-gallery').flickity({
     // options
     cellAlign: 'center',
@@ -246,7 +230,8 @@ function flickityWatchClick() {
     $(cellElement).addClass('is-clicked');
     $('.main-gallery').flickity('reposition');
     $('.main-gallery').flickity('select', cellIndex);
-    displayMovieDetails(cellIndex);
+    TMDbMovieLookUp(searchObj.results[cellIndex]);
+    TMDbTrailerLookUp(searchObj.results[cellIndex]);
     //$(cellElement).bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function () {})
   });
 }
@@ -256,7 +241,7 @@ function onLoad() {
   watchSubmit();
   watchNowPlaying();
   listCountries();
-  flickityInit();
+  flickityInitMain();
 }
 
 $(onLoad);

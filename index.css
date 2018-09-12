@@ -25,37 +25,9 @@ form {
   width: 100%;
 }
 
-.movie-container {
-  margin-top: 10px;
-  height: 500px;
-}
-
-.movie-container {
-  color: white;
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 75%;
-  overflow: auto; /* Enable scroll if needed */
-  background-color: lightgray;
-  background-size: cover;
-  background-position: center;
-  border: 8px solid orange;
-}
-
-.movie-title {
-  font-size: 30pt;
-}
-
-.movieDetails {
-  height: 0px;
-  width:200px;
-  margin:10px 10px;   
-  clear:both;
-  transition: height .5s;
-  background-color: red;
+.main-gallery {
+  width: 80%;
+  margin: 20px auto 0 auto;
 }
 
 .flickity-prev-next-button.previous, .flickity-prev-next-button.next {
@@ -78,10 +50,16 @@ form {
   width: 80%; 
 }
 
+.is-clicked {
+  padding: 25px;
+}
+
 .is-clicked img {
   float:left;
-  width: 200px;
+  width: 300px;
+  padding-right: 25px;
 }
+
 
 /* The Close Button */
 .close {
@@ -129,7 +107,13 @@ form {
   }
 
   .is-clicked img {
-    width: 200px;
+    width: 150px;
+    float: none;
+    padding-right: 0;
+  }
+
+  .image-container, .movie-title {
+    text-align: center;
   }
 
   .flickity-prev-next-button.previous, .flickity-prev-next-button.next {
@@ -142,15 +126,23 @@ form {
     width: 200px;
   }
 
+  .main-gallery {
+    width: 90%;
+    margin: 20px auto 0 auto;
+  }
+
+  .is-clicked img {
+    width: 100px;
+  }
   .gallery-cell {
     height: 500px;
   }
 
-  .is-clicked img {
-    width: 80px;
-  }
-
   .flickity-prev-next-button.previous, .flickity-prev-next-button.next {
     top: 150px;
+  }
+
+  h2 {
+    font-size: 14pt;
   }
 }

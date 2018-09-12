@@ -53,19 +53,28 @@ function displayResults(data) {
   $('.main-gallery').flickity('remove', $('.main-gallery').flickity('getCellElements'));
   //Filter results to not show any films that don't have a movie poster.
   const results = data.results.filter(movie => movie.poster_path);
+  searchObj.results = results;
   console.log(results);
+  //Render
   results.forEach(function (result, index) {
-    var $cellElems = $(`<div class="gallery-cell">
-    <img class="result-image" src="${TMDb_IMAGE_SMALL_URL}${result.poster_path}" id="${index}" alt="REPLACE">
-      <h3>
-        <a class="js-user-name" href="" target="_blank">${result.original_title}</a>
-      </h3>
-    </div>`);
+    var $cellElems = renderResult(result, index);
     $('.main-gallery').flickity('append', $cellElems);
   })
+  //Flickity select first item
   $('.main-gallery').flickity('select', 0);
 }
 
+function renderResult(result, index) {
+  return $(`
+  <div class="gallery-cell">
+    <div class="image-container">
+      <img class="result-image" src="${TMDb_IMAGE_SMALL_URL}${result.poster_path}" id="${index}" alt="${result.original_title}" title="${result.original_title}">
+    </div>
+    <div class="result-details"></div>
+  </div>
+  `);;
+}
+/*
 function getDataFromOMDb() {
   const query = {
     apikey: 'c6c932dc',
@@ -91,17 +100,22 @@ function logTMDbID(data) {
   })
 }
 
-function renderResult(result, index) {
+function renderTrailers(data) {
   return `
-    <div class="gallery-cell">
-        <img class="result-image" src="${TMDb_IMAGE_SMALL_URL}${result.poster_path}" id="${index}" alt="REPLACE">
-      <h3>
-        <a class="js-user-name" href="" target="_blank">${result.original_title}</a>
-      </h3>
-    </div>
+    <div>
+      <img src="${YOUTUBE_THUMBNAIL_URL}${data.key}/hqdefault.jpg">
+    </div
   `;
 }
 
+function displayResultsText(data) {
+  $('.js-results-text').prop('hidden', false);
+  $('.js-results-text').text(`
+    Results: ${data.pageInfo.totalResults}
+  `);
+}
+
+*/
 function displayMovieData() {
   const OMDb = searchObj.dataOMDb;
   const TMDb = searchObj.dataTMDb;
@@ -133,21 +147,6 @@ function displayMovieData() {
   $('.movie-container').removeClass('hidden');
 }
 
-function renderTrailers(data) {
-  return `
-    <div>
-      <img src="${YOUTUBE_THUMBNAIL_URL}${data.key}/hqdefault.jpg">
-    </div
-  `;
-}
-
-function displayResultsText(data) {
-  $('.js-results-text').prop('hidden', false);
-  $('.js-results-text').text(`
-    Results: ${data.pageInfo.totalResults}
-  `);
-}
-
 function watchSubmit() {
   $('.js-search-form').submit(event => {
     event.preventDefault();
@@ -160,25 +159,42 @@ function watchSubmit() {
   });
 }
 
-function watchMovieClick() {
-  $('.main-gallery').on("click", ".result-image", displayMovieDetails);
+function displayMovieDetails(index) {
+  console.log(searchObj.results[index]);
+  const render = renderDetails(searchObj.results[index]);
+  $('.is-clicked').children('.result-details').html(render);
 }
 
-function displayMovieDetails(e) {
-  $('.main-gallery').before('<div class="movieDetails section group"></div>');
-  $('.movieDetails').animate({
-    height: "300px"
-  }, 500, 'linear', function () {
-
-  })
+function renderDetails(data) {
+  return `
+  <div class="movie-container">
+    <h2 class="movie-title">${data.title}</h2>
+    <div class="movie-details">
+      Year:
+      Rating:
+    </div>
+    <div class="movie-reviews">
+      IMDb:
+      <span class="imdbScore"></span>
+      <br> RT:
+      <span class="rtScore"></span>
+      <br> MC:
+      <span class="mcScore"></span>
+    </div>
+    <p class="movie-plot">${data.overview}</p>
+    <h2>Trailers</h2>
+    <div class="movie-trailers"></div>
+  </div>
+  `
 }
 
+/*
 function watchContainerClose() {
   $('.close').click(function () {
     $('.movie-container').addClass('hidden');
   })
 }
-
+*/
 function watchNowPlaying() {
   $('.js-now-playing').submit(event => {
     const discover = $(event.currentTarget).find('.discover').val();
@@ -206,60 +222,41 @@ function flickityInit() {
   });
 }
 
+function flickityRemoveClicked(cellElement) {
+  if (!cellElement) {
+    cellElement = $('.main-gallery').find('.is-clicked');
+  }
+  $(cellElement).removeClass('is-clicked');
+  $(cellElement).children('.result-details').empty();
+  $('.main-gallery').flickity('reposition');
+}
+
 function flickityWatchClick() {
   $('.main-gallery').on('staticClick.flickity', function (event, pointer, cellElement, cellIndex) {
     // dismiss if cell was not clicked
     if (!cellElement) {
       return;
     }
-
     if ($(cellElement).hasClass('is-clicked')) {
-      $(cellElement).removeClass('is-clicked');
-      $('.main-gallery').flickity('select', cellIndex);        
-      $('.main-gallery').flickity('reposition');
-      $(cellElement).bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){ 
-      })
+      flickityRemoveClicked(cellElement);
       return;
     }
     // change cell background with .is-clicked
-    $('.main-gallery').find('.is-clicked').removeClass('is-clicked');
+    flickityRemoveClicked();
     $(cellElement).addClass('is-clicked');
     $('.main-gallery').flickity('reposition');
     $('.main-gallery').flickity('select', cellIndex);
-  });
-}
-/*
-function flickityWatchClick() {
-  $('.main-gallery').on('staticClick.flickity', function (event, pointer, cellElement, cellIndex) {
-    // dismiss if cell was not clicked
-    if (!cellElement) {
-      return;
-    }
-    
-    $('.main-gallery').flickity('select', cellIndex);
-    $('.main-gallery').find('.is-clicked').removeClass('is-clicked');
-    $(cellElement).addClass('is-clicked');
-  });
-}
-*/
-
-function flickityOnSettle() {
-  $('.main-gallery').on( 'settle.flickity', function( event, index ) {
-    //console.log( 'Flickity settled at ' + index );
+    displayMovieDetails(cellIndex);
+    //$(cellElement).bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function () {})
   });
 }
 
 function onLoad() {
-  /*
-  watchContainerClose();
-  watchMovieClick();
-  */
   flickityWatchClick();
   watchSubmit();
   watchNowPlaying();
   listCountries();
   flickityInit();
-  flickityOnSettle();
 }
 
 $(onLoad);

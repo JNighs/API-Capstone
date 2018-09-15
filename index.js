@@ -16,18 +16,20 @@ const key = {
   OMDb: 'c6c932dc'
 }
 
-function TMDbSearch(search) {
+function TMDbSearch(search, inputPage) {
   const query = {
     api_key: key.TMDb,
-    query: search
+    query: search,
+    page: inputPage,
   }
   $.getJSON(TMDb_SEARCH_URL, query, displayResults);
 }
 
-function TMDbDiscover(discover, country) {
+function TMDbDiscover(discover, country, inputPage) {
   const query = {
     api_key: key.TMDb,
-    region: country
+    region: country,
+    page: inputPage
   }
   let discoverURL = '';
   switch (discover) {
@@ -83,15 +85,6 @@ function renderResult(result, index) {
   `);
 }
 
-/*
-function displayResultsText(data) {
-  $('.js-results-text').prop('hidden', false);
-  $('.js-results-text').text(`
-    Results: ${data.pageInfo.totalResults}
-  `);
-}
-*/
-
 function watchSubmit() {
   $('.js-search-form').submit(event => {
     event.preventDefault();
@@ -105,19 +98,43 @@ function watchSubmit() {
 }
 
 function displayResults(data) {
+  console.log(data);
   //Clear previous results
   $('.main-gallery').flickity('remove', $('.main-gallery').flickity('getCellElements'));
   //Filter results to not show any films that don't have a movie poster.
   const results = data.results.filter(movie => movie.poster_path);
+  //Global
   searchObj.results = results;
-  console.log(results);
+  searchObj.page = data.page;
+  searchObj.totalResults = data.total_results;
+  searchObj.totalPages = data.total_pages;
   //Render
   results.forEach(function (result, index) {
     var $cellElems = renderResult(result, index);
     $('.main-gallery').flickity('append', $cellElems);
   })
-  //Flickity select first item
-  $('.main-gallery').flickity('select', 0);
+  //Flickity show arrows
+  $('.flickity-prev-next-button').css('visibility', 'visible')
+  //Wait for images to load then focus on gallery
+  $('.gallery-cell img').on('load', function () {
+    //Flickity select first item
+    $('.main-gallery').flickity('select', 0);
+    //Smoothly scroll to results
+    scrollToResults();
+  });
+}
+
+function scrollToResults() {
+  const target = $('.main-gallery').offset().top;
+  const offset = $('.gallery-cell img').height() / 4;
+  const speed = 800;
+  $("html, body").animate({ scrollTop: target - offset }, speed);
+
+  //Fix for bug that prevents scrolling
+  $(window).bind("mousewheel touchmove", function () {
+    $("html, body").stop(true, false);
+  });
+
 }
 
 function displayMovieDetails(data) {
@@ -128,19 +145,19 @@ function displayMovieDetails(data) {
 }
 
 function displayMovieRatings(data) {
+  //If failed to fetch any rating data
+  if (data.Response === "False") return;
+
   console.log(data);
   var rt = data.Ratings.find(function (obj) { return obj.Source === "Rotten Tomatoes"; });
   var imdb = data.Ratings.find(function (obj) { return obj.Source === "Internet Movie Database"; });
   var mc = data.Ratings.find(function (obj) { return obj.Source === "Metacritic"; });
   if (rt)
     $('.rtScore').text(rt.Value);
-  else $('.rtScore').text('N/A');
   if (imdb)
     $('.imdbScore').text(imdb.Value);
-  else $('.imdbScore').text('N/A');
   if (mc)
     $('.mcScore').text(mc.Value);
-  else $('.mcScore').text('N/A');
 }
 
 
@@ -160,18 +177,18 @@ function renderVideoResult(result, index) {
 
 function renderDetails(data) {
   return `
-  <div class="movie-container">
+  <div class="movie-container" aria-live="assertive">
     <h2 class="movie-title">${data.title}</h2>
     <div class="movie-details">
-      Released: ${data.release_date}
+      Release Date: ${data.release_date}
     </div>
     <div class="movie-ratings">
       IMDb:
-      <span class="imdbScore"></span>
+      <span class="imdbScore">N/A</span>
       <br> RT:
-      <span class="rtScore"></span>
+      <span class="rtScore">N/A</span>
       <br> MC:
-      <span class="mcScore"></span>
+      <span class="mcScore">N/A</span>
     </div>
     <p class="movie-plot">${data.overview}</p>
     <div class="video-gallery"></div>
@@ -231,15 +248,59 @@ function flickityWatchClick() {
     $('.main-gallery').flickity('reposition');
     $('.main-gallery').flickity('select', cellIndex);
     TMDbMovieLookUp(searchObj.results[cellIndex]);
-    TMDbTrailerLookUp(searchObj.results[cellIndex]);
     //$(cellElement).bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function () {})
   });
 }
+
+function watchTopRated() {
+  $('.top-rated').submit(event => {
+    event.preventDefault();
+    TMDbDiscover('topRated', 'US');
+  })
+}
+
+function watchPopular() {
+  $('.popular').submit(event => {
+    event.preventDefault();
+    TMDbDiscover('popular', 'US');
+  })
+}
+
+function watchDiscoverClick() {
+  $('.discoverButton').click(function (e) {
+    $('.discover-container').css('visibility', 'visible');
+  })
+}
+
+function watchFlickitySelect() {
+  $('.main-gallery').on('select.flickity', function (event, index) {
+    //Check if a cell has been clicked
+    if ($('.is-clicked')[0]) {
+      scrollToResults();
+    }
+
+    //Check if last result
+    if (index === searchObj.results.length - 1) {
+      console.log("Reach end")
+      if (searchObj.page != searchObj.totalPages) {
+        console.log("Load Next");
+      } else {
+        console.log("Finished");
+      }
+    }
+  })
+}
+
+
 
 function onLoad() {
   flickityWatchClick();
   watchSubmit();
   watchNowPlaying();
+  watchTopRated();
+  watchPopular();
+  watchDiscoverClick();
+  watchFlickitySelect();
   listCountries();
   flickityInitMain();
 }

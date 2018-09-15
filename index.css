@@ -1,24 +1,81 @@
+html {
+  background-image: url("images/background.png");
+  background-position: top;
+  background-repeat: repeat-y;
+  background-size: contain;
+  width: 100%;
+  height: 1000px;
+  /*For some reason this line is needed to make the background 
+  look correct ONLY in firefox, and ONLY on the start page*/
+  background-attachment: fixed;
+}
+
 body * {
   box-sizing: border-box;
   font-family: 'Mukta', sans-serif;
   margin: 0;
   padding: 0;
+
 }
 
 h1, h2{
   color: orange;
+  text-transform: uppercase;
+  text-align: center;
 }
 
 body {
-  padding-top: 50px;
+  padding-top: 40px;
+  width: 70%;
+  margin: auto;
 }
 
 :focus {
-  outline: 5px dotted red;
+  
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+.logo {
+  width: 200px;
+}
+
+label {
+  text-transform: uppercase;
 }
 
 form {
   text-align: center;
+}
+
+input, select {
+  width: 200px;
+  height: 30px;
+  border-radius: 7px;
+}
+
+
+button[type=submit] {
+  display: block;
+  margin: 5px auto 20px auto;
+  border-radius: 7px;
+  width: 100px;
+  height: 25px;
+  background-color: orange;
+  border: none;
+  color: white;
+  text-transform: uppercase;
+}
+
+.popular-container {
+  text-align: center;
+}
+
+.popular, .top-rated {
+  display: inline-block;
 }
 
 .movie-result img {
@@ -26,7 +83,6 @@ form {
 }
 
 .main-gallery {
-  width: 80%;
   margin: 20px auto 0 auto;
 }
 
@@ -38,8 +94,12 @@ form {
   width: 400px;
 }
 
+.image-container, .movie-title {
+  text-align: center;
+}
+
 .gallery-cell {
-  height: 800px;
+  height: 1000px;
 }
 
 .gallery-cell img {
@@ -51,13 +111,11 @@ form {
 }
 
 .is-clicked {
-  padding: 25px;
+  padding: 20px 8% 0 8%;
 }
 
 .is-clicked img {
-  float:left;
-  width: 300px;
-  padding-right: 25px;
+  width: 250px;
 }
 
 .movie-ratings {
@@ -68,35 +126,9 @@ form {
   font-size: 30pt;
 }
 
-
-/* The Close Button */
-.close {
-  color: #aaa;
-  position: absolute;
-  right: 0;
-  top: 0;
-  font-size: 45px;
-  font-weight: bold;
-  margin-right: 10px;
+.flickity-prev-next-button {
+  visibility: hidden;
 }
-
-.close:hover,
-.close:focus {
-  color: orange;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-/* Container Contents */
-
-.movie-trailers div {
-  display: inline-block;
-}
-
-.movie-trailers img {
-  width: 200px;
-}
-
 
 /*Utility*/
 
@@ -110,18 +142,8 @@ form {
     width: 300px;
   }
 
-  .gallery-cell {
-    height: 700px;
-  }
-
   .is-clicked img {
     width: 150px;
-    float: none;
-    padding-right: 0;
-  }
-
-  .image-container, .movie-title {
-    text-align: center;
   }
 
   .flickity-prev-next-button.previous, .flickity-prev-next-button.next {
@@ -135,15 +157,11 @@ form {
   }
 
   .main-gallery {
-    width: 90%;
     margin: 20px auto 0 auto;
   }
 
   .is-clicked img {
     width: 100px;
-  }
-  .gallery-cell {
-    height: 500px;
   }
 
   .flickity-prev-next-button.previous, .flickity-prev-next-button.next {

@@ -4,7 +4,6 @@ html {
   background-repeat: repeat-y;
   background-size: contain;
   width: 100%;
-  height: 1000px;
   /*For some reason this line is needed to make the background 
   look correct ONLY in firefox, and ONLY on the start page*/
   background-attachment: fixed;
@@ -15,8 +14,19 @@ body * {
   font-family: 'Mukta', sans-serif;
   margin: 0;
   padding: 0;
+}
+
+body {
+  padding-top: 40px;
+  width: 65%;
+  margin: auto;
+}
+
+:focus {
 
 }
+
+/*     TEXT    */
 
 h1, h2{
   color: orange;
@@ -24,24 +34,28 @@ h1, h2{
   text-align: center;
 }
 
-body {
-  padding-top: 40px;
-  width: 70%;
-  margin: auto;
+a {
+  text-decoration: none;
 }
 
-:focus {
-  
-}
 
-.logo-container {
+/*    LOGO     */
+.logo-container, .logo-container-footer {
   text-align: center;
   margin-bottom: 20px;
   text-transform: uppercase;
+  font-size: 10pt;
 }
+
+.logo-container-footer img {
+  width: 40px;
+}
+
 .logo {
   width: 200px;
 }
+
+/*     SEARCH    */
 
 label {
   text-transform: uppercase;
@@ -56,7 +70,6 @@ input, select {
   height: 30px;
   border-radius: 7px;
 }
-
 
 button[type=submit] {
   display: block;
@@ -78,31 +91,22 @@ button[type=submit] {
   display: inline-block;
 }
 
-.movie-result img {
-  width: 100%;
-}
-
+/*    RESULTS    */
+/* Flickity */
 .main-gallery {
-  margin: 20px auto 0 auto;
+  margin: 20px auto 300px auto;
 }
 
 .flickity-prev-next-button.previous, .flickity-prev-next-button.next {
   top: 325px;
+  visibility: hidden;
 }
 
-.gallery-cell, .gallery-cell img {
+.gallery-cell, .result-image {
   width: 400px;
 }
 
-.image-container, .movie-title {
-  text-align: center;
-}
-
-.gallery-cell {
-  height: 1000px;
-}
-
-.gallery-cell img {
+.result-image {
   transition: 1s;
 }
 
@@ -111,23 +115,42 @@ button[type=submit] {
 }
 
 .is-clicked {
-  padding: 20px 8% 0 8%;
+  padding: 0 8% 0 8%;
 }
 
-.is-clicked img {
+.is-clicked .result-image {
   width: 250px;
 }
 
-.movie-ratings {
-  margin: 5px 0 5px 0;
+/*     Movie Details     */
+.image-container, .movie-title {
+  text-align: center;
 }
 
 .movie-title {
   font-size: 30pt;
 }
 
-.flickity-prev-next-button {
-  visibility: hidden;
+.movie-ratings {
+  margin: 5px 0 5px 0;
+}
+
+/* Rating Logos */
+.movie-ratings img {
+  width: 25px;
+}
+
+/* Loading Icon */
+.loading-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -25px;
+}
+
+.loading-gif {
+  width: 50px;
 }
 
 /*Utility*/
@@ -138,11 +161,20 @@ button[type=submit] {
 
 /* Responsive */
 @media only screen and (max-width: 1280px){
-  .gallery-cell, .gallery-cell img {
+  body {
+    width: 70%;
+  }
+
+
+  .movie-title {
+    font-size: 20pt;
+  }
+
+  .gallery-cell, .result-image {
     width: 300px;
   }
 
-  .is-clicked img {
+  .is-clicked .result-image {
     width: 150px;
   }
 
@@ -152,20 +184,34 @@ button[type=submit] {
 }
 
 @media only screen and (max-width: 640px){
-  .gallery-cell, .gallery-cell img {
-    width: 200px;
+  html {
+    background-image: url('images/background-small.png');
+  }
+
+  body {
+    width: 85%;
+  }
+
+  .gallery-cell, .result-image {
+    width: 250px;
   }
 
   .main-gallery {
-    margin: 20px auto 0 auto;
+    margin: 20px auto 200px auto;
   }
 
-  .is-clicked img {
+  .is-clicked .result-image {
     width: 100px;
   }
 
+  .gallery-cell.is-clicked { 
+    width: 100%; 
+  }
+
   .flickity-prev-next-button.previous, .flickity-prev-next-button.next {
-    top: 150px;
+    width: 25px;
+    height: 25px;
+    top: 100px;
   }
 
   h2 {

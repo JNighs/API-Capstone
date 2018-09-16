@@ -8,13 +8,13 @@ const TMDb_MOVIE_URL = 'https://api.themoviedb.org/3/movie/';
 const TMDb_DISCOVER_URL = 'https://aple.themoviedb.org/3/discover/movie';
 const TMDb_IMAGE_BIG_URL = 'https://image.tmdb.org/t/p/original/';
 const TMDb_IMAGE_SMALL_URL = 'https://image.tmdb.org/t/p/w500/';
-const YOUTUBE_VIDEO_URL = 'https://www.youtube.com/watch?v=';
-const YOUTUBE_THUMBNAIL_URL = 'https://img.youtube.com/vi/';
 const searchObj = {};
 const key = {
   TMDb: '46922a4eb88a052d565922dfe0666828',
   OMDb: 'c6c932dc'
 }
+
+const $gallery = $('.main-gallery');
 
 function TMDbSearch(search, inputPage) {
   const query = {
@@ -22,6 +22,10 @@ function TMDbSearch(search, inputPage) {
     query: search,
     page: inputPage,
   }
+  //Global
+  searchObj.URL = TMDb_SEARCH_URL;
+  searchObj.country = 'US';
+
   $.getJSON(TMDb_SEARCH_URL, query, displayResults);
 }
 
@@ -29,7 +33,7 @@ function TMDbDiscover(discover, country, inputPage) {
   const query = {
     api_key: key.TMDb,
     region: country,
-    page: inputPage
+    page: inputPage,
   }
   let discoverURL = '';
   switch (discover) {
@@ -47,7 +51,19 @@ function TMDbDiscover(discover, country, inputPage) {
       break;
   }
 
+  searchObj.URL = discoverURL;
+  searchObj.country = country;
   $.getJSON(discoverURL, query, displayResults);
+}
+
+function nextPage() {
+  const query = {
+    api_key: key.TMDb,
+    region: searchObj.country,
+    page: searchObj.page,
+    query: searchObj.value,
+  }
+  $.getJSON(searchObj.URL, query, addToResults);
 }
 
 function TMDbMovieLookUp(data) {
@@ -65,13 +81,6 @@ function OMDbMovieLookUp(IMDbID) {
     i: IMDbID
   }
   return $.getJSON(OMDb_SEARCH_URL, query, displayMovieRatings);
-}
-
-function TMDbTrailerLookUp(data) {
-  const query = {
-    api_key: key.TMDb
-  }
-  return $.getJSON(`${TMDb_MOVIE_URL}${data.id}/videos`, query, displayTrailers);
 }
 
 function renderResult(result, index) {
@@ -93,6 +102,7 @@ function watchSubmit() {
     // clear out the input
     queryTarget.val("");
     $('.movie-container').addClass('hidden');
+    loadingIcon();
     TMDbSearch(searchObj.value);
   });
 }
@@ -100,7 +110,7 @@ function watchSubmit() {
 function displayResults(data) {
   console.log(data);
   //Clear previous results
-  $('.main-gallery').flickity('remove', $('.main-gallery').flickity('getCellElements'));
+  $gallery.flickity('remove', $gallery.flickity('getCellElements'));
   //Filter results to not show any films that don't have a movie poster.
   const results = data.results.filter(movie => movie.poster_path);
   //Global
@@ -111,21 +121,35 @@ function displayResults(data) {
   //Render
   results.forEach(function (result, index) {
     var $cellElems = renderResult(result, index);
-    $('.main-gallery').flickity('append', $cellElems);
+    $gallery.flickity('append', $cellElems);
   })
   //Flickity show arrows
   $('.flickity-prev-next-button').css('visibility', 'visible')
   //Wait for images to load then focus on gallery
   $('.gallery-cell img').on('load', function () {
     //Flickity select first item
-    $('.main-gallery').flickity('select', 0);
+    $gallery.flickity('select', 0);
+    $gallery.flickity('reloadCells');
     //Smoothly scroll to results
     scrollToResults();
   });
 }
 
+function addToResults(data) {
+  searchObj.results = searchObj.results.concat(data.results);
+  console.log(searchObj.results);
+  searchObj.page = data.page;
+  //Filter results to not show any films that don't have a movie poster.
+  const results = data.results.filter(movie => movie.poster_path);
+  //Render
+  results.forEach(function (result, index) {
+    var $cellElems = renderResult(result, index);
+    $gallery.flickity('append', $cellElems);
+  })
+}
+
 function scrollToResults() {
-  const target = $('.main-gallery').offset().top;
+  const target = $gallery.offset().top;
   const offset = $('.gallery-cell img').height() / 4;
   const speed = 800;
   $("html, body").animate({ scrollTop: target - offset }, speed);
@@ -140,6 +164,7 @@ function scrollToResults() {
 function displayMovieDetails(data) {
   const render = renderDetails(data);
   $('.is-clicked').children('.result-details').html(render);
+  $gallery.flickity('reloadCells');
   //Look up review info from OMDb
   OMDbMovieLookUp(data.imdb_id);
 }
@@ -165,16 +190,6 @@ function displayTrailers(data) {
   console.log(data.results);
 }
 
-function renderVideoResult(result, index) {
-  return $(`
-  <div class="gallery-cell">
-    <div class="image-container">
-      <img class="result-image" src="${YOUTUBE_THUMBNAIL_URL}${result.key}/mqdefault.jpg" alt="${result.name}" title="${result.name}">
-    </div>
-  </div>
-  `);
-}
-
 function renderDetails(data) {
   return `
   <div class="movie-container" aria-live="assertive">
@@ -183,11 +198,11 @@ function renderDetails(data) {
       Release Date: ${data.release_date}
     </div>
     <div class="movie-ratings">
-      IMDb:
-      <span class="imdbScore">N/A</span>
-      <br> RT:
-      <span class="rtScore">N/A</span>
-      <br> MC:
+      <img src="images/imdb.png" alt="imdb">
+      <span class="imdbScore">N/A</span><br> 
+      <img src="images/rottentomatoes.png" alt="Rotten Tomatoes">
+      <span class="rtScore">N/A</span><br> 
+      <img src="images/metacritic.png" alt="Metacritic">
       <span class="mcScore">N/A</span>
     </div>
     <p class="movie-plot">${data.overview}</p>
@@ -201,6 +216,7 @@ function watchNowPlaying() {
     const discover = $(event.currentTarget).find('.discover').val();
     const country = $(event.currentTarget).find('.country').val();
     event.preventDefault();
+    loadingIcon();
     TMDbDiscover(discover, country);
   })
 }
@@ -215,7 +231,7 @@ function listCountries() {
 }
 
 function flickityInitMain() {
-  $('.main-gallery').flickity({
+  $gallery.flickity({
     // options
     cellAlign: 'center',
     contain: false,
@@ -225,28 +241,29 @@ function flickityInitMain() {
 
 function flickityRemoveClicked(cellElement) {
   if (!cellElement) {
-    cellElement = $('.main-gallery').find('.is-clicked');
+    cellElement = $gallery.find('.is-clicked');
   }
   $(cellElement).removeClass('is-clicked');
   $(cellElement).children('.result-details').empty();
-  $('.main-gallery').flickity('reposition');
+  $gallery.flickity('reposition');
 }
 
 function flickityWatchClick() {
-  $('.main-gallery').on('staticClick.flickity', function (event, pointer, cellElement, cellIndex) {
+  $gallery.on('staticClick.flickity', function (event, pointer, cellElement, cellIndex) {
     // dismiss if cell was not clicked
     if (!cellElement) {
       return;
     }
     if ($(cellElement).hasClass('is-clicked')) {
       flickityRemoveClicked(cellElement);
+      $gallery.flickity('reloadCells');
       return;
     }
     // change cell background with .is-clicked
     flickityRemoveClicked();
     $(cellElement).addClass('is-clicked');
-    $('.main-gallery').flickity('reposition');
-    $('.main-gallery').flickity('select', cellIndex);
+    $gallery.flickity('reposition');
+    $gallery.flickity('select', cellIndex);
     TMDbMovieLookUp(searchObj.results[cellIndex]);
     //$(cellElement).bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function () {})
   });
@@ -255,6 +272,7 @@ function flickityWatchClick() {
 function watchTopRated() {
   $('.top-rated').submit(event => {
     event.preventDefault();
+    loadingIcon();
     TMDbDiscover('topRated', 'US');
   })
 }
@@ -262,35 +280,54 @@ function watchTopRated() {
 function watchPopular() {
   $('.popular').submit(event => {
     event.preventDefault();
+    loadingIcon();
     TMDbDiscover('popular', 'US');
   })
 }
 
-function watchDiscoverClick() {
-  $('.discoverButton').click(function (e) {
-    $('.discover-container').css('visibility', 'visible');
-  })
-}
 
 function watchFlickitySelect() {
-  $('.main-gallery').on('select.flickity', function (event, index) {
+  $gallery.on('select.flickity', function (event, index) {
     //Check if a cell has been clicked
     if ($('.is-clicked')[0]) {
       scrollToResults();
     }
 
-    //Check if last result
-    if (index === searchObj.results.length - 1) {
-      console.log("Reach end")
-      if (searchObj.page != searchObj.totalPages) {
-        console.log("Load Next");
-      } else {
-        console.log("Finished");
-      }
+    if (index === searchObj.results.length - 1 && searchObj.page != searchObj.totalPages) {
+      loadingIcon();
+    } else {
+      removeLoadingIcon();
     }
   })
 }
 
+function loadingIcon() {
+  $('body').append(`
+    <div class="loading-container">
+      <img src="images/loading.gif">
+    </div>
+  `)
+}
+
+function removeLoadingIcon() {
+  $('.loading-container').remove();
+}
+
+function watchFlickitySettle() {
+  $gallery.on('settle.flickity', function (event, index) {
+    //Check if last result
+    if (index === searchObj.results.length - 1 && searchObj.page != searchObj.totalPages) {
+      searchObj.page++;
+      nextPage();
+    }
+  })
+}
+
+function onResize() {
+  $(window).resize(function () {
+    $gallery.flickity('reloadCells');
+  })
+}
 
 
 function onLoad() {
@@ -299,10 +336,11 @@ function onLoad() {
   watchNowPlaying();
   watchTopRated();
   watchPopular();
-  watchDiscoverClick();
   watchFlickitySelect();
+  watchFlickitySettle();
   listCountries();
   flickityInitMain();
+  onResize();
 }
 
 $(onLoad);

@@ -38,6 +38,9 @@ a {
   text-decoration: none;
 }
 
+::placeholder {
+  color: white;
+}
 
 /*    LOGO     */
 .logo-container, .logo-container-footer {
@@ -53,42 +56,6 @@ a {
 
 .logo {
   width: 200px;
-}
-
-/*     SEARCH    */
-
-label {
-  text-transform: uppercase;
-}
-
-form {
-  text-align: center;
-}
-
-input, select {
-  width: 200px;
-  height: 30px;
-  border-radius: 7px;
-}
-
-button[type=submit] {
-  display: block;
-  margin: 5px auto 20px auto;
-  border-radius: 7px;
-  width: 100px;
-  height: 25px;
-  background-color: orange;
-  border: none;
-  color: white;
-  text-transform: uppercase;
-}
-
-.popular-container {
-  text-align: center;
-}
-
-.popular, .top-rated {
-  display: inline-block;
 }
 
 /*    RESULTS    */
@@ -151,6 +118,101 @@ button[type=submit] {
 
 .loading-gif {
   width: 50px;
+}
+
+/*    Form     */
+input[type=radio] {
+  position: fixed;
+  left: -200px;
+}
+
+input:not([type=radio]), select {
+  appearance: none;
+  background-color: orange;
+  display: block;
+  transition: 300ms ease;
+  border-radius: 7px;
+  border: 0;
+  max-height: 0;
+  margin: 0;
+  padding: 0 10px;
+  overflow: hidden;
+  width: 250px;
+  opacity: 0;
+  font-size: 16px;
+  text-align: center;
+  outline: 0;
+}
+
+[id=search]:checked ~ input.search,
+[id=discoverSearch]:checked ~ select.discoverSearch,
+[id=reset]:checked ~ input.reset {
+  max-height: 40px;
+  padding: 10px;
+  margin: 10px 0;
+  opacity: 1;
+}
+
+/* Override above when needed */
+.hiddenOption {
+  max-height: 0 !important; 
+  padding: 0 10px !important;
+  margin: 0 !important;
+  opacity: 0 !important;
+}
+
+button {
+  width: 250px;
+  height: 40px;
+  border-radius: 7px;
+  background-color: orange;
+  font-size: 0;
+}
+
+button[type=submit]:before {
+  font-size: 16px;
+  content: "Search";
+}
+
+label {
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  font-weight: 700;
+  cursor: pointer;
+  color: orange;
+  transition: 300ms ease;
+  width: calc(100% / 3 - 4px);
+}
+
+label:after {
+  content: "";
+  border: 10px solid transparent;
+  position: absolute;
+  bottom: -10px;
+  left: calc(50% - 10px);
+  transition: inherit;
+}
+
+[id=search]:checked ~ [for=search],
+[id=discoverSearch]:checked ~ [for=discoverSearch],
+[id=reset]:checked ~ [for=reset] {
+  color: black;
+}
+[id=search]:checked ~ [for=search]:after,
+[id=discoverSearch]:checked ~ [for=discoverSearch]:after,
+[id=reset]:checked ~ [for=reset]:after {
+  border-bottom-color: orange;
+}
+
+.flex-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  height: 300px;
+  text-align: center;
+  transition: 300ms ease;
 }
 
 /*Utility*/

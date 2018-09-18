@@ -16,6 +16,8 @@ const key = {
 
 const $gallery = $('.main-gallery');
 
+/*          AJAX Calls           */
+
 function TMDbSearch(search, inputPage) {
   const query = {
     api_key: key.TMDb,
@@ -56,7 +58,7 @@ function TMDbDiscover(discover, country, inputPage) {
   $.getJSON(discoverURL, query, displayResults);
 }
 
-function nextPage() {
+function TMDbNextPage() {
   const query = {
     api_key: key.TMDb,
     region: searchObj.country,
@@ -66,6 +68,7 @@ function nextPage() {
   $.getJSON(searchObj.URL, query, addToResults);
 }
 
+//Lookup movie details
 function TMDbMovieLookUp(data) {
   const movieID = data.id;
   const query = {
@@ -75,6 +78,7 @@ function TMDbMovieLookUp(data) {
   $.getJSON(TMDb_MOVIE_URL + movieID, query, displayMovieDetails);
 }
 
+//Look up movie reviews
 function OMDbMovieLookUp(IMDbID) {
   const query = {
     apikey: 'c6c932dc',
@@ -83,30 +87,7 @@ function OMDbMovieLookUp(IMDbID) {
   return $.getJSON(OMDb_SEARCH_URL, query, displayMovieRatings);
 }
 
-function renderResult(result, index) {
-  return $(`
-  <div class="gallery-cell">
-    <div class="image-container">
-      <img class="result-image" src="${TMDb_IMAGE_SMALL_URL}${result.poster_path}" id="${index}" alt="${result.original_title}" title="${result.original_title}">
-    </div>
-    <div class="result-details"></div>
-  </div>
-  `);
-}
-
-function watchSubmit() {
-  $('.js-search-form').submit(event => {
-    event.preventDefault();
-    const $this = $(event.currentTarget);
-    //Find active search form
-    const searchType = $('input:checked').attr('id');
-    if (searchType === 'search') {
-      searchMovie($this);
-    } else if (searchType === 'discoverSearch') {
-      searchDiscover($this);
-    }
-  });
-}
+/*          Search Form           */
 
 function searchMovie(event) {
   const queryTarget = event.find('.js-query');
@@ -123,6 +104,8 @@ function searchDiscover(event) {
   TMDbDiscover(discover, country);
 }
 
+/*          Display           */
+
 function displayResults(data) {
   console.log(data);
   //Filter results to not show any films that don't have a movie poster.
@@ -131,7 +114,6 @@ function displayResults(data) {
   $gallery.flickity('remove', $gallery.flickity('getCellElements'));
   //Temporary height to prevent scroll movement upon removing previous results
   $gallery.css('height', '1000px');
-  $('.flex-wrap').css('height', '200px');
   //Global
   searchObj.results = results;
   searchObj.page = data.page;
@@ -153,6 +135,7 @@ function displayResults(data) {
     $gallery.flickity('reloadCells');
     //Smoothly scroll to results
     scrollToResults();
+    $gallery.focus();
   });
 }
 
@@ -167,19 +150,6 @@ function addToResults(data) {
     var $cellElems = renderResult(result, index);
     $gallery.flickity('append', $cellElems);
   })
-}
-
-function scrollToResults() {
-  const target = $gallery.offset().top;
-  const offset = $('.gallery-cell img').height() / 4;
-  const speed = 800;
-  $("html, body").animate({ scrollTop: target - offset }, speed);
-
-  //Fix for bug that prevents scrolling
-  $(window).bind("mousewheel touchmove", function () {
-    $("html, body").stop(true, false);
-  });
-
 }
 
 function displayMovieDetails(data) {
@@ -206,14 +176,26 @@ function displayMovieRatings(data) {
     $('.mcScore').text(mc.Value);
 }
 
-function displayTrailers(data) {
-  console.log(data.results);
+/*          Render           */
+
+function renderResult(result, index) {
+  return $(`
+  <div class="gallery-cell">
+    <div class="image-container">
+      <img class="result-image" src="${TMDb_IMAGE_SMALL_URL}${result.poster_path}" id="${index}" alt="${result.original_title}" title="${result.original_title}">
+      <div class="title-block">
+        <h2>${result.title}</h2>
+      </div>
+    </div>
+    <div class="result-details"></div>
+  </div>
+  `);
 }
 
 function renderDetails(data) {
   return `
   <div class="movie-container" aria-live="assertive">
-    <h2 class="movie-title">${data.title}</h2>
+  <div class="movie-title"><h2>${data.title}</h2></div>
     <div class="movie-details">
       Release Date: ${data.release_date}
     </div>
@@ -231,26 +213,10 @@ function renderDetails(data) {
   `
 }
 
-function watchNowPlaying() {
-  $('.js-now-playing').submit(event => {
-    const discover = $(event.currentTarget).find('.discover').val();
-    const country = $(event.currentTarget).find('.country').val();
-    event.preventDefault();
-    loadingIcon();
-    TMDbDiscover(discover, country);
-  })
-}
+/*          Flickity Carousel           */
 
-function listCountries() {
-  const dropDown = $('.country');
-  countryDb.forEach(country => {
-    dropDown.append($('<option></option>').attr('value', country.iso_3166_1).text(country.english_name))
-  })
-  //Make US the default value
-  $("option[value='US']").prop('selected', true);
-}
-
-function flickityInitMain() {
+//Initialize
+function flickityInit() {
   $gallery.flickity({
     // options
     cellAlign: 'center',
@@ -259,7 +225,48 @@ function flickityInitMain() {
   });
 }
 
-function flickityRemoveClicked(cellElement) {
+//Look for cell click or keyboard press
+////Show/Hide cell movie details
+function watchFlickityClick() {
+  //Look for static mouse click on cell
+  $gallery.on('staticClick.flickity', function (event, pointer, cellElement, cellIndex) {
+    flickityExpandCell(cellElement, cellIndex);
+  });
+  //a11y - Look for spacebar or enter key with gallery focused
+  $(window).keypress(function (e) {
+    if (e.which === 32 || e.which === 13) {
+      if ($gallery.is(":focus")) {
+        //Grab cell element and index manually
+        const $flickity = $gallery.flickity().data('flickity');
+        flickityExpandCell($flickity.selectedElement, $flickity.selectedIndex);
+      }
+    }
+  });
+}
+
+//Load movie details
+function flickityExpandCell(cellElement, cellIndex) {
+  // dismiss if cell was not clicked
+  if (!cellElement) {
+    return;
+  }
+  // if clicked on previously selected cell
+  if ($(cellElement).hasClass('is-clicked')) {
+    flickityReduceCell(cellElement);
+    $gallery.flickity('reloadCells');
+    return;
+  }
+  // change cell background with .is-clicked
+  flickityReduceCell();
+  $(cellElement).addClass('is-clicked');
+  $gallery.flickity('reposition');
+  $gallery.flickity('select', cellIndex);
+  TMDbMovieLookUp(searchObj.results[cellIndex]);
+  //$(cellElement).bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function () {})
+}
+
+//Remove movie details
+function flickityReduceCell(cellElement) {
   if (!cellElement) {
     cellElement = $gallery.find('.is-clicked');
   }
@@ -268,50 +275,25 @@ function flickityRemoveClicked(cellElement) {
   $gallery.flickity('reposition');
 }
 
-function flickityWatchClick() {
-  $gallery.on('staticClick.flickity', function (event, pointer, cellElement, cellIndex) {
-    // dismiss if cell was not clicked
-    if (!cellElement) {
-      return;
+//Run function on carousel settle (stop moving)
+////Load more results if on last cell
+function watchFlickitySettle() {
+  $gallery.on('settle.flickity', function (event, index) {
+    //Check if last result
+    if (index === searchObj.results.length - 1 && searchObj.page != searchObj.totalPages) {
+      searchObj.page++;
+      TMDbNextPage();
     }
-    if ($(cellElement).hasClass('is-clicked')) {
-      flickityRemoveClicked(cellElement);
-      $gallery.flickity('reloadCells');
-      return;
-    }
-    // change cell background with .is-clicked
-    flickityRemoveClicked();
-    $(cellElement).addClass('is-clicked');
-    $gallery.flickity('reposition');
-    $gallery.flickity('select', cellIndex);
-    TMDbMovieLookUp(searchObj.results[cellIndex]);
-    //$(cellElement).bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function () {})
-  });
-}
-
-function watchTopRated() {
-  $('.top-rated').submit(event => {
-    event.preventDefault();
-    loadingIcon();
-    TMDbDiscover('topRated', 'US');
   })
 }
 
-function watchPopular() {
-  $('.popular').submit(event => {
-    event.preventDefault();
-    loadingIcon();
-    TMDbDiscover('popular', 'US');
-  })
-}
-
+//Run functions on new carousel cell select
+////Scroll to results if movie details are open
+////If on last result and there are more results to load - show load icon
 function watchFlickitySelect() {
+  //run on new cell select
   $gallery.on('select.flickity', function (event, index) {
-    //Check if a cell has been clicked
-    if ($('.is-clicked')[0]) {
-      scrollToResults();
-    }
-
+    //If on last result and there are more results to load - show load icon
     if (index === searchObj.results.length - 1 && searchObj.page != searchObj.totalPages) {
       loadingIcon();
     } else {
@@ -319,6 +301,8 @@ function watchFlickitySelect() {
     }
   })
 }
+
+/*          Misc Methods           */
 
 function loadingIcon() {
   $('body').append(`
@@ -332,27 +316,42 @@ function removeLoadingIcon() {
   $('.loading-container').remove();
 }
 
-function watchFlickitySettle() {
-  $gallery.on('settle.flickity', function (event, index) {
-    //Check if last result
-    if (index === searchObj.results.length - 1 && searchObj.page != searchObj.totalPages) {
-      searchObj.page++;
-      nextPage();
-    }
-  })
+function scrollToResults() {
+  const target = $gallery.offset().top;
+  const offset = $('.gallery-cell img').height() / 4;
+  const speed = 800;
+  $("html, body").animate({ scrollTop: target - offset }, speed, function () {
+    $("html, body").stop(true, false);
+  });
+
 }
+
+//Fill out the list of countries in the discover form
+function listCountries() {
+  const dropDown = $('.country');
+  countryDb.forEach(country => {
+    dropDown.append($('<option></option>').attr('value', country.iso_3166_1).text(country.english_name))
+  })
+  //Make US the default value
+  $("option[value='US']").prop('selected', true);
+}
+
+/*          Event Callbacks           */
 
 //Changed input required attriute depending on form
 function watchSearchFormChange() {
   $('input[type=radio][name=rg]').change(function () {
+    //Remove ability to tab to all forms
+    $('.search, .discoverSearch').each(function () { $(this).prop('tabindex', -1) });
     //Remove all previous required inputs
     $('input[required]').each(function () { $(this).prop('required', false) });
     //Add in required inputs based on form
     if (this.id == 'search') {
       $(".js-query").prop('required', true);
+      $('.search').prop('tabindex', 0);
     }
     else if (this.id == 'discoverSearch') {
-      //Fill in
+      $('.discoverSearch').each(function () { $(this).prop('tabindex', 0) });
     }
   });
 }
@@ -369,6 +368,21 @@ function watchOptions() {
   })
 }
 
+//Form submit
+function watchSubmit() {
+  $('.js-search-form').submit(event => {
+    event.preventDefault();
+    const $this = $(event.currentTarget);
+    //Find active search form
+    const searchType = $('input:checked').attr('id');
+    if (searchType === 'search') {
+      searchMovie($this);
+    } else if (searchType === 'discoverSearch') {
+      searchDiscover($this);
+    }
+  });
+}
+
 //Reload gallery on window resize
 function onResize() {
   $(window).resize(function () {
@@ -376,20 +390,48 @@ function onResize() {
   })
 }
 
-function onLoad() {
-  flickityWatchClick();
+function watchTabPress() {
+  $('body').keyup(function (e) {
+    var code = e.keyCode || e.which;
+    if (code == '9') {
+      focusBorder();
+    }
+  });
+}
 
+function focusBorder() {
+  $("#search").on('focus', function () {
+    console.log('search focus');
+    $("label[for='search']").css('border', '3px solid red');
+  }).on('focusout', function () {
+    $("label[for='search']").css('border', 'none');
+  });
+
+  $("#discoverSearch").on('focus', function () {
+    $("label[for='discoverSearch']").css('border', '3px solid red');
+  }).on('focusout', function () {
+    $("label[for='discoverSearch']").css('border', 'none');
+  });
+
+  $("body *").on('focus', function () {
+    console.log(this);
+    $(this).css('border', '3px solid red');
+  }).on('focusout', function () {
+    $(this).css('border', 'none');
+  });
+}
+
+function onLoad() {
   watchSubmit();
   watchSearchFormChange();
   watchOptions();
 
-  watchNowPlaying();
-  watchTopRated();
-  watchPopular();
+  watchFlickityClick();
   watchFlickitySelect();
   watchFlickitySettle();
+  flickityInit();
+
   listCountries();
-  flickityInitMain();
   onResize();
 }
 

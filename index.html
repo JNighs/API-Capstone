@@ -8,7 +8,6 @@
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
 	 crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="index.css" type="text/css" />
-	<link rel="stylesheet" href="float-grid.css" type="text/css">
 	<link rel="stylesheet" href="Flickity/flickity.css" media="screen">
 </head>
 
@@ -19,21 +18,21 @@
 			<h1>Movie Database</h1>
 		</div>
 		<div class="flex-wrap">
-			<form action class="js-search-form">
+			<form action class="js-search-form" autocomplete="off">
 				<input type="radio" name="rg" id="search" checked/>
 				<input type="radio" name="rg" id="discoverSearch" />
 
 				<label for="search">Search</label>
 				<label for="discoverSearch">Discover</label>
 
-				<input class="search js-query" type="text" placeholder="Search for movie titles" autocomplete="off" onfocus="this.value=''" required />
-				<select class="discoverSearch discover" name="discover">
+				<input class="search js-query" type="text" placeholder="Search for movie titles" onfocus="this.value=''" required />
+				<select class="discoverSearch discover" name="discover" tabindex="-1" autocomplete="off">
 					<option value="nowPlaying">Now Playing</option>
 					<option value="upcoming">Upcoming</option>
 					<option value="topRated">Top Rated</option>
 					<option value="popular">Popular</option>
 				</select>
-				<select class="discoverSearch country" name="country"></select>
+				<select class="discoverSearch country" name="country" tabindex="-1"></select>
 				<button type="submit">Search</button>
 			</form>
 		</div>

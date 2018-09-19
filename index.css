@@ -105,15 +105,11 @@ a {
 }
 
 .is-clicked {
-  padding: 0 8% 0 8%;
+  padding: 0 9% 0 9%;
 }
 
 .is-clicked .result-image {
   width: 250px;
-}
-
-.movie-details {
-  margin-top: 10px;
 }
 
 .results-number {
@@ -121,7 +117,6 @@ a {
 }
 
 /*     Movie Details     */
-
 
 .image-container, .movie-title-container {
   text-align: center;
@@ -132,11 +127,24 @@ a {
   font-size: 25pt;
 }
 
-.movie-ratings {
+.movie-ratings, .movie-details {
   margin: 10px auto 0 auto;
   text-align: center;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
+}
+
+.movie-plot {
+  margin: 10px auto 0 auto;
+}
+
+.rating-image {
+  display: block;
+  margin: 0 auto 10px auto;
+}
+
+.stat-container, .rating-container {
+  width: 33%;
 }
 
 /* Rating Logos */
@@ -145,10 +153,14 @@ a {
   vertical-align: middle;
 }
 
-.rt, .mc, .imdb {
+.statLabel {
+  display: block;
+  color: orange;
   font-size: 18pt;
-  font-weight: 700;
-  margin-left: 5px;
+}
+
+.rating, .stat {
+  font-size: 14pt;
 }
 
 .movie-year {
@@ -297,11 +309,10 @@ button:focus {
 
   .movie-ratings img {
     width: 25px;
-    display: block;
-    margin: 0 auto 0 auto;
+    margin-bottom: 5px;
   }
   
-  .rt, .mc, .imdb {
+  .rating, .stat {
     font-size: 16pt;
   }
 
@@ -330,10 +341,13 @@ button:focus {
   .movie-title, .movie-year {
     font-size: 15pt;
   }
+
+  .statLabel {
+    font-size: 12pt;
+  }
   
-  .rt, .mc, .imdb {
-    font-size: 15pt;
-    font-weight: 600;
+  .rating, .stat {
+    font-size: 12pt;
   }
 
   .gallery-cell, .result-image {
@@ -356,6 +370,10 @@ button:focus {
     width: 25px;
     height: 25px;
     top: 100px;
+  }
+
+  .is-clicked {
+    padding: 0 3% 0 3%;
   }
   
 }

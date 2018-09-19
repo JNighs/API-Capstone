@@ -172,19 +172,17 @@ function displayMovieDetails(data) {
   const render = renderDetails(data);
   $('.is-clicked').children('.result-details').html(render);
   $gallery.flickity('reloadCells');
-  //Look up review info from OMDb
+  //Look up stat info from OMDb
   OMDbMovieLookUp(data.imdb_id);
 }
 
 function displayOMDbData(data) {
   //If failed to fetch any rating data
   if (data.Response === "False") return;
-  console.log(data);
-  displayMovieRatings(data);
   $('.movie-year').text(data.Year);
-  $('.movie-release').text('Released: ' + data.Released);
-  $('.movie-runtime').text('Runtime: ' + data.Runtime);
-  $('.movie-rated').text('Rated: ' + data.Rated);
+  displayMovieRatings(data);
+  displayMovieStats(data);
+  removeLoadingIcon();
 }
 
 function displayMovieRatings(data) {
@@ -194,9 +192,22 @@ function displayMovieRatings(data) {
   if (rt)
     $('.movie-ratings').append(renderRating('rt', rt.Value));
   if (imdb)
-  $('.movie-ratings').append(renderRating('imdb', imdb.Value));
+    $('.movie-ratings').append(renderRating('imdb', imdb.Value));
   if (mc)
-  $('.movie-ratings').append(renderRating('mc', mc.Value));
+    $('.movie-ratings').append(renderRating('mc', mc.Value));
+}
+
+function displayMovieStats(data) {
+  var release = data.Released;
+  var runtime = data.Runtime;
+  var rated = data.Rated;
+
+  if (release)
+    $('.movie-details').append(renderStat('Release', release));
+  if (runtime)
+    $('.movie-details').append(renderStat('Runtime', runtime));
+  if (rated)
+    $('.movie-details').append(renderStat('Rated', rated));
 
   $gallery.flickity('reloadCells');
 }
@@ -224,13 +235,9 @@ function renderDetails(data) {
     <h2 class="movie-title">${data.title}</h2>
     <h3 class="movie-year"></h3>
   </div>
-    <div class="movie-ratings">
-    </div>
-    <div class="movie-details">
-      <div class="movie-release"></div>
-      <div class="movie-runtime"></div>
-      <div class="movie-rated"></div>
-    </div>
+    <div class="movie-ratings"></div>
+    <div class="movie-details"></div>
+    <h3>Summary</h3>
     <p class="movie-plot">${data.overview}</p>
     <div class="video-gallery"></div>
   </div>
@@ -239,9 +246,17 @@ function renderDetails(data) {
 
 function renderRating(source, score) {
   return `
-  <div class="rating">
-    <img src="images/${source}.png" alt="${source}">
-    <span class="${source}">${score}</span>
+  <div class="rating-container">
+    <img class="rating-image" src="images/${source}.png" alt="${source}">
+    <span class="rating">${score}</span>
+  </div>`
+}
+
+function renderStat(source, stat) {
+  return `
+  <div class="stat-container">
+    <h3 class="statLabel">${source}: </h3 >
+    <span class="stat">${stat}</span>
   </div>`
 }
 
@@ -293,6 +308,7 @@ function flickityExpandCell(cellElement, cellIndex) {
   $(cellElement).addClass('is-clicked');
   $gallery.flickity('reposition');
   $gallery.flickity('select', cellIndex);
+  loadingIcon();
   TMDbMovieLookUp(searchObj.results[cellIndex]);
   //$(cellElement).bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function () {})
 }
@@ -430,28 +446,6 @@ function watchTabPress() {
     if (code == '9') {
       focusBorder();
     }
-  });
-}
-
-function focusBorder() {
-  $("#search").on('focus', function () {
-    console.log('search focus');
-    $("label[for='search']").css('border', '3px solid red');
-  }).on('focusout', function () {
-    $("label[for='search']").css('border', 'none');
-  });
-
-  $("#discoverSearch").on('focus', function () {
-    $("label[for='discoverSearch']").css('border', '3px solid red');
-  }).on('focusout', function () {
-    $("label[for='discoverSearch']").css('border', 'none');
-  });
-
-  $("body *").on('focus', function () {
-    console.log(this);
-    $(this).css('border', '3px solid red');
-  }).on('focusout', function () {
-    $(this).css('border', 'none');
   });
 }
 

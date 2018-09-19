@@ -112,10 +112,18 @@ a {
   width: 250px;
 }
 
+.movie-details {
+  margin-top: 10px;
+}
+
+.results-number {
+  color: black;
+}
+
 /*     Movie Details     */
 
 
-.image-container, .movie-title {
+.image-container, .movie-title-container {
   text-align: center;
   position: relative;
 }
@@ -125,12 +133,26 @@ a {
 }
 
 .movie-ratings {
-  margin: 5px 0 5px 0;
+  margin: 10px auto 0 auto;
+  text-align: center;
+  display: flex;
+  justify-content: space-evenly;
 }
 
 /* Rating Logos */
 .movie-ratings img {
-  width: 25px;
+  width: 50px;
+  vertical-align: middle;
+}
+
+.rt, .mc, .imdb {
+  font-size: 18pt;
+  font-weight: 700;
+  margin-left: 5px;
+}
+
+.movie-year {
+  font-size: 19pt;
 }
 
 /* Loading Icon */
@@ -273,6 +295,16 @@ button:focus {
     font-size: 20pt;
   }
 
+  .movie-ratings img {
+    width: 25px;
+    display: block;
+    margin: 0 auto 0 auto;
+  }
+  
+  .rt, .mc, .imdb {
+    font-size: 16pt;
+  }
+
   .gallery-cell, .result-image {
     width: 300px;
   }
@@ -293,6 +325,15 @@ button:focus {
 
   body {
     width: 85%;
+  }
+
+  .movie-title, .movie-year {
+    font-size: 15pt;
+  }
+  
+  .rt, .mc, .imdb {
+    font-size: 15pt;
+    font-weight: 600;
   }
 
   .gallery-cell, .result-image {
@@ -316,8 +357,5 @@ button:focus {
     height: 25px;
     top: 100px;
   }
-
-  .movie-title {
-    font-size: 14pt;
-  }
+  
 }

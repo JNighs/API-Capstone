@@ -84,7 +84,7 @@ function OMDbMovieLookUp(IMDbID) {
     apikey: 'c6c932dc',
     i: IMDbID
   }
-  return $.getJSON(OMDb_SEARCH_URL, query, displayMovieRatings);
+  return $.getJSON(OMDb_SEARCH_URL, query, displayOMDbData);
 }
 
 /*          Search Form           */
@@ -108,8 +108,16 @@ function searchDiscover(event) {
 
 function displayResults(data) {
   console.log(data);
+  //If no results
+  if (data.total_results === 0) {
+    noResults();
+    return;
+  }
   //Filter results to not show any films that don't have a movie poster.
   const results = data.results.filter(movie => movie.poster_path);
+  //Show results number
+  $('.results-number').text(`Results: ${data.total_results}`);
+  $('.results-number').removeClass('hidden');
   //Clear previous results
   $gallery.flickity('remove', $gallery.flickity('getCellElements'));
   //Temporary height to prevent scroll movement upon removing previous results
@@ -125,7 +133,7 @@ function displayResults(data) {
     $gallery.flickity('append', $cellElems);
   })
   //Flickity show arrows
-  $('.flickity-prev-next-button').css('visibility', 'visible')
+  $('.flickity-prev-next-button').css('visibility', 'visible');
   //Wait for images to load then focus on gallery
   $('.gallery-cell img').on('load', function () {
     //Return height to normal once new results are in
@@ -137,6 +145,14 @@ function displayResults(data) {
     scrollToResults();
     $gallery.focus();
   });
+}
+
+function noResults() {
+  removeLoadingIcon();
+  $('.results-number').text('No Results');
+  $('.results-number').removeClass('hidden');
+  $gallery.flickity('remove', $gallery.flickity('getCellElements'));
+  $('.flickity-prev-next-button').css('visibility', 'hidden');
 }
 
 function addToResults(data) {
@@ -160,20 +176,29 @@ function displayMovieDetails(data) {
   OMDbMovieLookUp(data.imdb_id);
 }
 
-function displayMovieRatings(data) {
+function displayOMDbData(data) {
   //If failed to fetch any rating data
   if (data.Response === "False") return;
-
   console.log(data);
+  displayMovieRatings(data);
+  $('.movie-year').text(data.Year);
+  $('.movie-release').text('Released: ' + data.Released);
+  $('.movie-runtime').text('Runtime: ' + data.Runtime);
+  $('.movie-rated').text('Rated: ' + data.Rated);
+}
+
+function displayMovieRatings(data) {
   var rt = data.Ratings.find(function (obj) { return obj.Source === "Rotten Tomatoes"; });
   var imdb = data.Ratings.find(function (obj) { return obj.Source === "Internet Movie Database"; });
   var mc = data.Ratings.find(function (obj) { return obj.Source === "Metacritic"; });
   if (rt)
-    $('.rtScore').text(rt.Value);
+    $('.movie-ratings').append(renderRating('rt', rt.Value));
   if (imdb)
-    $('.imdbScore').text(imdb.Value);
+  $('.movie-ratings').append(renderRating('imdb', imdb.Value));
   if (mc)
-    $('.mcScore').text(mc.Value);
+  $('.movie-ratings').append(renderRating('mc', mc.Value));
+
+  $gallery.flickity('reloadCells');
 }
 
 /*          Render           */
@@ -195,22 +220,29 @@ function renderResult(result, index) {
 function renderDetails(data) {
   return `
   <div class="movie-container" aria-live="assertive">
-  <div class="movie-title"><h2>${data.title}</h2></div>
-    <div class="movie-details">
-      Release Date: ${data.release_date}
-    </div>
+  <div class="movie-title-container">
+    <h2 class="movie-title">${data.title}</h2>
+    <h3 class="movie-year"></h3>
+  </div>
     <div class="movie-ratings">
-      <img src="images/imdb.png" alt="imdb">
-      <span class="imdbScore">N/A</span><br> 
-      <img src="images/rottentomatoes.png" alt="Rotten Tomatoes">
-      <span class="rtScore">N/A</span><br> 
-      <img src="images/metacritic.png" alt="Metacritic">
-      <span class="mcScore">N/A</span>
+    </div>
+    <div class="movie-details">
+      <div class="movie-release"></div>
+      <div class="movie-runtime"></div>
+      <div class="movie-rated"></div>
     </div>
     <p class="movie-plot">${data.overview}</p>
     <div class="video-gallery"></div>
   </div>
   `
+}
+
+function renderRating(source, score) {
+  return `
+  <div class="rating">
+    <img src="images/${source}.png" alt="${source}">
+    <span class="${source}">${score}</span>
+  </div>`
 }
 
 /*          Flickity Carousel           */
@@ -362,8 +394,10 @@ function watchOptions() {
     const option = $(this).val();
     if (option === 'topRated' || option === 'popular') {
       $('.country').addClass('hiddenOption');
+      $('.country').prop('tabindex', '-1');
     } else {
       $('.country').removeClass('hiddenOption');
+      $('.country').prop('tabindex', '0');
     }
   })
 }

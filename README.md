@@ -2,6 +2,12 @@ Movie Database
 =============
 An easy to use and quick way to look up aggregate review information for a film.
 
+Features
+---------
+* Find review data and info for a specific film
+* Discover what movies are upcoming or currently in theaters.
+* Find top rated or currently popular films.
+
 Live Demo
 ---------
 Demo: https://jnighs.github.io/API-Capstone/

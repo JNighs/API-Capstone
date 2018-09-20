@@ -220,7 +220,7 @@ function renderResult(result, index) {
     <div class="image-container">
       <img class="result-image" src="${TMDb_IMAGE_SMALL_URL}${result.poster_path}" id="${index}" alt="${result.original_title}" title="${result.original_title}">
       <div class="title-block">
-        <h2>${result.title}</h2>
+        <h3>${result.title}</h3>
       </div>
     </div>
     <div class="result-details"></div>
@@ -232,14 +232,15 @@ function renderDetails(data) {
   return `
   <div class="movie-container" aria-live="assertive">
   <div class="movie-title-container">
-    <h2 class="movie-title">${data.title}</h2>
-    <h3 class="movie-year"></h3>
+    <h1 class="movie-title">${data.title}</h1>
+    <h2 class="movie-year"></h3>
   </div>
     <div class="movie-ratings"></div>
     <div class="movie-details"></div>
-    <h3>Summary</h3>
-    <p class="movie-plot">${data.overview}</p>
-    <div class="video-gallery"></div>
+    <div class="movie-plot-container">
+      <h3>Summary</h3>
+      <p>${data.overview}</p>
+    </div>
   </div>
   `
 }
@@ -248,7 +249,7 @@ function renderRating(source, score) {
   return `
   <div class="rating-container">
     <img class="rating-image" src="images/${source}.png" alt="${source}">
-    <span class="rating">${score}</span>
+    <h4 class="rating">${score}</h4>
   </div>`
 }
 
@@ -256,7 +257,7 @@ function renderStat(source, stat) {
   return `
   <div class="stat-container">
     <h3 class="statLabel">${source}: </h3 >
-    <span class="stat">${stat}</span>
+    <h4 class="stat">${stat}</h4>
   </div>`
 }
 

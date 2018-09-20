@@ -24,10 +24,26 @@ body {
 
 /*     TEXT    */
 
-h1, h2{
-  color: orange;
+h1, h2, h3{
   text-transform: uppercase;
   text-align: center;
+}
+
+h1, h3 {
+  color: orange;
+}
+
+h2 {
+  color: black;
+}
+
+h4 {
+  font-size: 14pt;
+  font-weight: 500;
+}
+
+.movie-plot-container h3 {
+  color: black;
 }
 
 a {
@@ -43,7 +59,6 @@ a {
   text-align: center;
   margin-bottom: 20px;
   text-transform: uppercase;
-  font-size: 10pt;
 }
 
 .logo-container-footer img {
@@ -94,13 +109,16 @@ a {
 
 .is-selected .title-block {
   max-height: 500px;
+  font-size: 15pt;
   padding: 15px 10px 40px 10px;
-  font-size: 10pt;
 }
 
 .is-clicked .title-block {
   max-height: 0px;
   padding: 0;  
+}
+
+.is-clicked .title-block h3 {
   font-size: 0;
 }
 
@@ -123,19 +141,19 @@ a {
   position: relative;
 }
 
-.movie-title {
-  font-size: 25pt;
+.movie-title-container {
+  margin-bottom: 20px;
 }
 
 .movie-ratings, .movie-details {
-  margin: 10px auto 0 auto;
+  margin: 0 auto 10px auto;
   text-align: center;
   display: flex;
   justify-content: center;
 }
 
-.movie-plot {
-  margin: 10px auto 0 auto;
+.movie-plot-container {
+  margin-top: 20px;
 }
 
 .rating-image {
@@ -156,15 +174,6 @@ a {
 .statLabel {
   display: block;
   color: orange;
-  font-size: 18pt;
-}
-
-.rating, .stat {
-  font-size: 14pt;
-}
-
-.movie-year {
-  font-size: 19pt;
 }
 
 /* Loading Icon */
@@ -303,17 +312,9 @@ button:focus {
     width: 70%;
   }
 
-  .movie-title {
-    font-size: 20pt;
-  }
-
   .movie-ratings img {
     width: 25px;
     margin-bottom: 5px;
-  }
-  
-  .rating, .stat {
-    font-size: 16pt;
   }
 
   .gallery-cell, .result-image {
@@ -338,15 +339,19 @@ button:focus {
     width: 85%;
   }
 
-  .movie-title, .movie-year {
-    font-size: 15pt;
+  h1 {
+    font-size: 16pt;
+  }
+  
+  h2 {
+    font-size: 14pt;
   }
 
-  .statLabel {
+  h3 {
     font-size: 12pt;
   }
   
-  .rating, .stat {
+  h4 {
     font-size: 12pt;
   }
 

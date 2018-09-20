@@ -107,7 +107,6 @@ function searchDiscover(event) {
 /*          Display           */
 
 function displayResults(data) {
-  console.log(data);
   //If no results
   if (data.total_results === 0) {
     noResults();
@@ -157,7 +156,6 @@ function noResults() {
 
 function addToResults(data) {
   searchObj.results = searchObj.results.concat(data.results);
-  console.log(searchObj.results);
   searchObj.page = data.page;
   //Filter results to not show any films that don't have a movie poster.
   const results = data.results.filter(movie => movie.poster_path);
@@ -178,7 +176,12 @@ function displayMovieDetails(data) {
 
 function displayOMDbData(data) {
   //If failed to fetch any rating data
-  if (data.Response === "False") return;
+  if (data.Response === "False") {
+    $('.movie-ratings').remove();
+    $('.movie-details').remove();
+    removeLoadingIcon();
+    return;
+  }
   $('.movie-year').text(data.Year);
   displayMovieRatings(data);
   displayMovieStats(data);

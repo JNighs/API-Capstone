@@ -223,7 +223,7 @@ function renderResult(result, index) {
     <div class="image-container">
       <img class="result-image" src="${TMDb_IMAGE_SMALL_URL}${result.poster_path}" id="${index}" alt="${result.original_title}" title="${result.original_title}">
       <div class="title-block">
-        <h3>${result.title}</h3>
+        ${result.title}
       </div>
     </div>
     <div class="result-details"></div>
@@ -373,6 +373,7 @@ function scrollToResults() {
   const offset = $('.gallery-cell img').height() / 4;
   const speed = 800;
   $("html, body").animate({ scrollTop: target - offset }, speed, function () {
+    //Prevents bug where scroll is locked
     $("html, body").stop(true, false);
   });
 
@@ -442,15 +443,6 @@ function onResize() {
   $(window).resize(function () {
     $gallery.flickity('reloadCells');
   })
-}
-
-function watchTabPress() {
-  $('body').keyup(function (e) {
-    var code = e.keyCode || e.which;
-    if (code == '9') {
-      focusBorder();
-    }
-  });
 }
 
 function onLoad() {

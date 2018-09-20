@@ -24,7 +24,7 @@ body {
 
 /*     TEXT    */
 
-h1, h2, h3{
+h1, h2, h3, .title-block{
   text-transform: uppercase;
   text-align: center;
 }
@@ -109,16 +109,15 @@ a {
 
 .is-selected .title-block {
   max-height: 500px;
-  font-size: 15pt;
+    font-size: 15pt;
+  font-weight: 600;
   padding: 15px 10px 40px 10px;
+  color: orange;
 }
 
 .is-clicked .title-block {
   max-height: 0px;
   padding: 0;  
-}
-
-.is-clicked .title-block h3 {
   font-size: 0;
 }
 
@@ -372,8 +371,8 @@ button:focus {
   }
 
   .flickity-prev-next-button.previous, .flickity-prev-next-button.next {
-    width: 25px;
-    height: 25px;
+    width: 50px;
+    height: 50px;
     top: 100px;
   }
 

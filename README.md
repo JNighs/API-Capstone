@@ -10,7 +10,7 @@ Features
 
 Live Demo
 ---------
-Demo: https://jnighs.github.io/API-Capstone/
+Demo: https://jnighs.github.io/Movie-Database/
 
 Screenshots
 -----------

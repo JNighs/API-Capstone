@@ -37,6 +37,12 @@ Built with
 * JavaScript
 * jQuery
 
+API's Used
+---------
+
+TMDb: https://www.themoviedb.org/
+OMDb: http://www.omdbapi.com/
+
 Author
 -------
 James Nighswonger

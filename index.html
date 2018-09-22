@@ -18,25 +18,28 @@
 			<h1>Movie Database</h1>
 		</div>
 		<div class="flex-wrap">
-			<form action class="js-search-form" autocomplete="off">
-				<input type="radio" name="rg" id="search" checked/>
-				<input type="radio" name="rg" id="discoverSearch" />
+			<fieldset>
+				<form action class="js-search-form" autocomplete="off" >
+					<span class="hidden" id="formLabel">Choose Search Type</span>
+					<input type="radio" name="rg" id="search" checked aria-labelledby="formLabel"  aria-describedby="searchLabel"/>
+					<input type="radio" name="rg" id="discoverSearch" aria-labelledby="formLabel" aria-describedby="discoverLabel" />
 
-				<label for="search">Search</label>
-				<label for="discoverSearch">Discover</label>
+					<label for="search" id="searchLabel">Search</label>
+					<label for="discoverSearch" id="discoverLabel">Discover</label>
 
-				<input class="search js-query" type="text" placeholder="Search for movie titles" onfocus="this.value=''" required />
-				<select class="discoverSearch discover" name="discover" tabindex="-1" autocomplete="off">
-					<option value="nowPlaying">Now Playing</option>
-					<option value="upcoming">Upcoming</option>
-					<option value="topRated">Top Rated</option>
-					<option value="popular">Popular</option>
-				</select>
-				<select class="discoverSearch country" name="country" tabindex="-1"></select>
-				<button type="submit">Search</button>
-			</form>
+					<input class="search js-query" type="text" placeholder="Search for movie titles" onfocus="this.value=''" aria-label="Search for a Movie" required />
+					<select class="discoverSearch discover" name="discover" tabindex="-1" autocomplete="off" aria-label="Discover search type">
+						<option value="nowPlaying">Now Playing</option>
+						<option value="upcoming">Upcoming</option>
+						<option value="topRated">Top Rated</option>
+						<option value="popular">Popular</option>
+					</select>
+					<select class="discoverSearch country" name="country" tabindex="-1" aria-label="Country"></select>
+					<button type="submit">Search</button>
+				</form>
+			</fieldset>
 		</div>
-		<h2 class="results-number hidden">Results</h2>
+		<h2 class="results-number hidden" role="alert">Results</h2>
 		<div class="main-gallery"></div>
 		<div class="logo-container-footer">
 			<p>API's:

@@ -193,11 +193,11 @@ function displayMovieRatings(data) {
   var imdb = data.Ratings.find(function (obj) { return obj.Source === "Internet Movie Database"; });
   var mc = data.Ratings.find(function (obj) { return obj.Source === "Metacritic"; });
   if (rt)
-    $('.movie-ratings').append(renderRating('rt', rt.Value));
+    $('.movie-ratings').append(renderRating('rotten-tomatoes', rt.Value));
   if (imdb)
     $('.movie-ratings').append(renderRating('imdb', imdb.Value));
   if (mc)
-    $('.movie-ratings').append(renderRating('mc', mc.Value));
+    $('.movie-ratings').append(renderRating('metacritic', mc.Value));
 }
 
 function displayMovieStats(data) {
@@ -233,7 +233,7 @@ function renderResult(result, index) {
 
 function renderDetails(data) {
   return `
-  <div class="movie-container" aria-live="assertive">
+  <div class="movie-container">
   <div class="movie-title-container">
     <h1 class="movie-title">${data.title}</h1>
     <h2 class="movie-year"></h3>
@@ -250,9 +250,9 @@ function renderDetails(data) {
 
 function renderRating(source, score) {
   return `
-  <div class="rating-container">
-    <img class="rating-image" src="images/${source}.png" alt="${source}">
-    <h4 class="rating">${score}</h4>
+  <div class="stat-container">
+    <img class="rating-image" src="images/${source}.png" alt="${source} Rating">
+    <span class="stat">${score}</span>
   </div>`
 }
 
@@ -260,7 +260,7 @@ function renderStat(source, stat) {
   return `
   <div class="stat-container">
     <h3 class="statLabel">${source}: </h3 >
-    <h4 class="stat">${stat}</h4>
+    <span class="stat">${stat}</span>
   </div>`
 }
 

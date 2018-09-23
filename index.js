@@ -307,14 +307,12 @@ function flickityExpandCell(cellElement, cellIndex) {
     $gallery.flickity('reloadCells');
     return;
   }
-  // change cell background with .is-clicked
   flickityReduceCell();
   $(cellElement).addClass('is-clicked');
   $gallery.flickity('reposition');
   $gallery.flickity('select', cellIndex);
   loadingIcon();
   TMDbMovieLookUp(searchObj.results[cellIndex]);
-  //$(cellElement).bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function () {})
 }
 
 //Remove movie details
@@ -340,7 +338,6 @@ function watchFlickitySettle() {
 }
 
 //Run functions on new carousel cell select
-////Scroll to results if movie details are open
 ////If on last result and there are more results to load - show load icon
 function watchFlickitySelect() {
   //run on new cell select
